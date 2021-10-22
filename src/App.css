@@ -5,3 +5,19 @@
 textarea {
   height: 100px;
 }
+
+th {
+  border: 1px solid black;
+  border-spacing: 0px;
+  padding: 4px;
+  margin: 0px;
+}
+
+td {
+  border: 1px solid black;
+  padding: 4px;
+}
+
+li {
+  list-style-type: none;
+}
