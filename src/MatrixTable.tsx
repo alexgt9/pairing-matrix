@@ -54,7 +54,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
   ));
 
   return (
-    <div className={"matrix"}>
+    <div className="matrix space-y-4 flex flex-col">
       <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -81,8 +81,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
       </div>
       <div>
         <ul className={"summary-list"}>
-          <li>Rotation frequency: {rotationFrequency} day(s)</li>
-          <li>Different pairs: {Math.ceil(differentPairs / 2)}</li>
+          <li>Different pairs: {differentPairs}</li>
           <li>The cycle is every {repeatEveryWeeks} week(s)</li>
         </ul>
       </div>
@@ -125,11 +124,12 @@ export const TableCell = ({
   const listItems = pairs.map((pair: Pair, index: number) => (
     <li key={`${pair[0]}${pair[1]}`}>{`${pair[0]} & ${pair[1]}`}</li>
   ));
+  const monthStyle = coordinates === "0-0" || date.getDate() === 1 ? "long" : "short";
 
   return (
     <td className="px-6 py-4 whitespace-nowrap border-gray-400" key={coordinates}>
       <span className={"cell-date"}>
-        {date.toLocaleString("es-US", { month: "long", day: "numeric" })}
+        {date.toLocaleString("es-US", { month: monthStyle, day: "numeric" })}
       </span>
       <div className={`${colorClass} pair`}>{listItems}</div>
     </td>
