@@ -54,7 +54,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
   ));
 
   return (
-    <div>
+    <div className={"matrix"}>
       <table>
         <thead>
           <tr>
@@ -68,7 +68,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
         <tbody>{rows}</tbody>
       </table>
       <div>
-        <ul>
+        <ul className={"summary-list"}>
           <li>Rotation frequency: {rotationFrequency} day(s)</li>
           <li>Different pairs: {Math.ceil(differentPairs / 2)}</li>
           <li>The cycle is every {repeatEveryWeeks} week(s)</li>
@@ -115,9 +115,9 @@ export const TableCell = ({
   ));
 
   return (
-    <td key={coordinates} className={colorClass}>
-      {date.toLocaleString("es-US", { month: "long", day: "numeric" })}
-      {listItems}
+    <td key={coordinates}>
+      <span className={"cell-date"}>{date.toLocaleString("es-US", { month: "long", day: "numeric" })}</span>
+      <div className={`${colorClass} pair`}>{listItems}</div>
     </td>
   );
 };
