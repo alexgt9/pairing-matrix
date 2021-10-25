@@ -4,11 +4,6 @@ import Matrix from "./Matrix";
 
 const App = () => {
   const [names, setNames] = useState("Alejandro\nPaco\nJavi\nPepe");
-  const [showMatrix, setShowMatrix] = useState(false);
-
-  function createMatrix() {
-    setShowMatrix(true);
-  }
 
   function updateNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setNames(event.target.value);
@@ -21,8 +16,7 @@ const App = () => {
         Introduce the names:
         <textarea value={names} onChange={updateNames}></textarea>
       </label>
-      <button onClick={createMatrix}>Create matrix</button>
-      {showMatrix && <Matrix names={names.split("\n")} />}
+      <Matrix names={names.split("\n")} />
     </div>
   );
 };

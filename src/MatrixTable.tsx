@@ -20,18 +20,20 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
     [] as RotationDay[]
   );
 
-  const rows = _.chunk(daysWithRepetition, 5).map((week) => (
-    <TableRow days={week} />
+  const rows = _.chunk(daysWithRepetition, 5).map((week, index) => (
+    <TableRow key={index} rowNumber={index} days={week} />
   ));
 
   return (
     <table>
       <thead>
-        <th>Monday</th>
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Thursday</th>
-        <th>Friday</th>
+        <tr>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+        </tr>
       </thead>
       <tbody>{rows}</tbody>
     </table>
@@ -39,28 +41,30 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
 };
 
 type TableRowProps = {
+  rowNumber: number;
   days: RotationDay[];
 };
 
-export const TableRow = ({ days }: TableRowProps) => {
+export const TableRow = ({ days, rowNumber }: TableRowProps) => {
   const cells = days.map((day: RotationDay, index: number) => (
-    <TableCell pairs={day.pairs} colorClass={day.colorClass} />
+    <TableCell key={index} pairs={day.pairs} colorClass={day.colorClass} coordinates={`${rowNumber}-${index}`}/>
   ));
 
-  return <tr>{cells}</tr>;
+  return <tr key={rowNumber}>{cells}</tr>;
 };
 
 type TableCellProps = {
+  coordinates: string;
   pairs: Pair[];
   colorClass: string;
 };
 
-export const TableCell = ({ pairs, colorClass }: TableCellProps) => {
+export const TableCell = ({ pairs, colorClass, coordinates }: TableCellProps) => {
   const listItems = pairs.map((pair: Pair, index: number) => (
     <li key={`${pair[0]}${pair[1]}`}>{`${pair[0]} & ${pair[1]}`}</li>
   ));
 
-  return <td className={colorClass}>{listItems}</td>;
+  return <td key={coordinates} className={colorClass}>{listItems}</td>;
 };
 
 export default MatrixTable;

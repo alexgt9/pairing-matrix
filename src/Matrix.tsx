@@ -29,7 +29,7 @@ const Matrix = ({ names }: MatrixProps) => {
       (previous, pair): string => previous + pair[0] + pair[1],
       ""
     );
-    const pairColor = pairColorClasses[hash] || `pair-${pairClassesCount}`;
+    const pairColor = pairColorClasses[hash] || `pair-${pairClassesCount % 9}`;
     pairClassesCount += 1;
     pairColorClasses[hash] = pairColor;
 

@@ -28,6 +28,10 @@ li {
   list-style-type: none;
 }
 
+.pair-0 {
+  background-color: #d0acef;
+}
+
 .pair-1 {
   background-color: #8BF67E;
 }
@@ -50,4 +54,16 @@ li {
 
 .pair-6 {
   background-color: #F6C87E;
+}
+
+.pair-7 {
+  background-color: #7ef6e4;
+}
+
+.pair-8 {
+  background-color: #f6e87e;
+}
+
+.pair-9 {
+  background-color: #a6f67e;
 }
