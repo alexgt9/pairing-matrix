@@ -4,6 +4,7 @@ import { robin } from "./utils";
 
 type MatrixProps = {
   names: string[];
+  rotationFrequency: number;
 };
 
 export type Pair = [string, string];
@@ -12,15 +13,7 @@ type Rotations = {
   colorClass: string;
 };
 
-const Matrix = ({ names }: MatrixProps) => {
-  const [rotationFrequency, setRotationFrequency] = useState("1");
-
-  const onChangeRotationFrequency = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRotationFrequency(event.target.value);
-  };
-
+const Matrix = ({ names, rotationFrequency }: MatrixProps) => {
   let pairClassesCount = 1;
   const pairColorClasses: Record<string, string> = {};
 
@@ -44,17 +37,10 @@ const Matrix = ({ names }: MatrixProps) => {
   });
 
   return (
-    <div>
-      <div>
-        Pairing every{" "}
-        <input value={rotationFrequency} onChange={onChangeRotationFrequency} />{" "}
-        days
-      </div>
-      <MatrixTable
-        rotationDays={rotationDays}
-        rotationFrequency={parseInt(rotationFrequency)}
-      />
-    </div>
+    <MatrixTable
+      rotationDays={rotationDays}
+      rotationFrequency={rotationFrequency}
+    />
   );
 };
 

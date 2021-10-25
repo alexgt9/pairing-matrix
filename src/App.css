@@ -2,13 +2,6 @@
   text-align: center;
 }
 
-.matrix {
-  margin: 2em;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-}
-
 .summary-list {
   display: flex;
   flex-direction: column;
@@ -16,24 +9,11 @@
 }
 
 textarea {
-  height: 100px;
-}
-
-th {
-  border: 1px solid black;
-  border-spacing: 0px;
-  padding: 4px;
-  margin: 0px;
+  height: 150px;
 }
 
 td {
-  border: 1px solid black;
-}
-
-td li {
-    padding-bottom: 5px;
-    width: max-content;
-    text-align: center;
+  border: solid #434443 1px;
 }
 
 li {

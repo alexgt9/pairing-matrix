@@ -55,18 +55,30 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
 
   return (
     <div className={"matrix"}>
-      <table>
-        <thead>
-          <tr>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
+      <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Monday
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tuesday
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Wednesday
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Thursday
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Friday
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-x divide-y divide-gray-200">{rows}</tbody>
+        </table>
+      </div>
       <div>
         <ul className={"summary-list"}>
           <li>Rotation frequency: {rotationFrequency} day(s)</li>
@@ -115,8 +127,10 @@ export const TableCell = ({
   ));
 
   return (
-    <td key={coordinates}>
-      <span className={"cell-date"}>{date.toLocaleString("es-US", { month: "long", day: "numeric" })}</span>
+    <td className="px-6 py-4 whitespace-nowrap border-gray-400" key={coordinates}>
+      <span className={"cell-date"}>
+        {date.toLocaleString("es-US", { month: "long", day: "numeric" })}
+      </span>
       <div className={`${colorClass} pair`}>{listItems}</div>
     </td>
   );
