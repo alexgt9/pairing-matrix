@@ -42,7 +42,6 @@ const Matrix = ({ names }: MatrixProps) => {
       colorClass: pairColorClass(pairs),
     } as Rotations;
   });
-  const differentPairs = rotationDays.length;
 
   return (
     <div>
@@ -51,17 +50,10 @@ const Matrix = ({ names }: MatrixProps) => {
         <input value={rotationFrequency} onChange={onChangeRotationFrequency} />{" "}
         days
       </div>
-      <div>
-        <MatrixTable
-          rotationDays={rotationDays}
-          rotationFrequency={parseInt(rotationFrequency)}
-        />
-      </div>
-      <div>
-        Iterations needed for {differentPairs} different pairs rotating every{" "}
-        {rotationFrequency} day(s) in 5 days week is{" "}
-        {leastCommonMultiple(differentPairs * parseInt(rotationFrequency), 5)}
-      </div>
+      <MatrixTable
+        rotationDays={rotationDays}
+        rotationFrequency={parseInt(rotationFrequency)}
+      />
     </div>
   );
 };

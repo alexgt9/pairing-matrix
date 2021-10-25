@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { getNextWorkingDay, nextMonday } from "./utils";
+import { getNextWorkingDay, leastCommonMultiple, nextMonday } from "./utils";
 
 type MatrixTableProps = {
   rotationDays: Rotations[];
@@ -19,6 +19,8 @@ type PairingDay = {
 };
 
 const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
+  const differentPairs = rotationDays.length;
+
   const daysWithRepetition: Rotations[] = rotationDays.reduce(
     (repeatedDays, day) => [
       ...repeatedDays,
@@ -26,9 +28,12 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
     ],
     [] as Rotations[]
   );
+
+  const neededRepetitions = leastCommonMultiple(differentPairs * rotationFrequency, 5) / (differentPairs * rotationFrequency);
+  const daysUntilDate: Rotations[] = _.range(neededRepetitions).map((value) => daysWithRepetition).flat(); 
   
   let nextDay = nextMonday();
-  const daysWithDate = daysWithRepetition.map((day) => {
+  const daysWithDate = daysUntilDate.map((day) => {
     const dayWithDate = {
       ...day,
       date: nextDay,
@@ -43,18 +48,25 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
   ));
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Monday</th>
-          <th>Tuesday</th>
-          <th>Wednesday</th>
-          <th>Thursday</th>
-          <th>Friday</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div>
+        Iterations needed for {Math.ceil(differentPairs / 2)} different pairs rotating every{" "}
+        {rotationFrequency} day(s) in 5 days week is{" "}
+        {leastCommonMultiple(differentPairs * rotationFrequency, 5)}
+      </div>
+    </div>
   );
 };
 
