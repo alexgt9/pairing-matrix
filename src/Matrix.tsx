@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { useState } from "react";
 import MatrixTable from "./MatrixTable";
-import { leastCommonMultiple, newParticipants, padParisToBeEven } from "./utils";
+import { leastCommonMultiple, newParticipants, padParisToBeEven, robin } from "./utils";
 
 type MatrixProps = {
   names: string[];
