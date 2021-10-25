@@ -76,7 +76,9 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-x divide-y divide-gray-200">{rows}</tbody>
+          <tbody className="bg-white divide-x divide-y divide-gray-200">
+            {rows}
+          </tbody>
         </table>
       </div>
       <div>
@@ -124,10 +126,14 @@ export const TableCell = ({
   const listItems = pairs.map((pair: Pair, index: number) => (
     <li key={`${pair[0]}${pair[1]}`}>{`${pair[0]} & ${pair[1]}`}</li>
   ));
-  const monthStyle = coordinates === "0-0" || date.getDate() === 1 ? "long" : "short";
+  const monthStyle =
+    coordinates === "0-0" || date.getDate() === 1 ? "long" : "short";
 
   return (
-    <td className="px-6 py-4 whitespace-nowrap border-gray-400" key={coordinates}>
+    <td
+      className="px-6 py-4 whitespace-nowrap border-gray-400"
+      key={coordinates}
+    >
       <span className={"cell-date"}>
         {date.toLocaleString("es-US", { month: monthStyle, day: "numeric" })}
       </span>

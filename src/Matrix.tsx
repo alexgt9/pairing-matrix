@@ -14,7 +14,7 @@ type Rotations = {
 };
 
 const Matrix = ({ names, rotationFrequency }: MatrixProps) => {
-  let pairClassesCount = 1;
+  let pairClassesCount = 0;
   const pairColorClasses: Record<string, string> = {};
 
   const pairColorClass = (pairs: Pair[]) => {
