@@ -44,10 +44,6 @@ const Matrix = ({ names }: MatrixProps) => {
   });
   const differentPairs = rotationDays.length;
 
-  const iterations = rotationDays.map((day, index) => {
-    return <Iteration key={index} day={index + 1} pairs={day.pairs} />;
-  });
-
   return (
     <div>
       <div>
@@ -61,32 +57,11 @@ const Matrix = ({ names }: MatrixProps) => {
           rotationFrequency={parseInt(rotationFrequency)}
         />
       </div>
-      <div>{iterations}</div>
       <div>
         Iterations needed for {differentPairs} different pairs rotating every{" "}
         {rotationFrequency} day(s) in 5 days week is{" "}
         {leastCommonMultiple(differentPairs * parseInt(rotationFrequency), 5)}
       </div>
-    </div>
-  );
-};
-
-type IterationProps = {
-  day: number;
-  pairs: Pair[];
-};
-
-const Iteration = ({ pairs, day }: IterationProps) => {
-  const listItems = pairs.map((pair: Pair, index: number) => (
-    <li key={`${pair[0]}${pair[1]}`}>{`Room ${index + 1}: ${pair[0]} & ${
-      pair[1]
-    }`}</li>
-  ));
-
-  return (
-    <div>
-      <h2>{`Pairs ${day}`}</h2>
-      <ul>{listItems}</ul>
     </div>
   );
 };
