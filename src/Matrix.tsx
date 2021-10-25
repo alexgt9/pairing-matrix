@@ -1,6 +1,6 @@
 import { useState } from "react";
 import MatrixTable from "./MatrixTable";
-import { leastCommonMultiple, robin } from "./utils";
+import { robin } from "./utils";
 
 type MatrixProps = {
   names: string[];

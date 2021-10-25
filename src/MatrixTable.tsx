@@ -29,9 +29,15 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
     [] as Rotations[]
   );
 
-  const neededRepetitions = leastCommonMultiple(differentPairs * rotationFrequency, 5) / (differentPairs * rotationFrequency);
-  const daysUntilDate: Rotations[] = _.range(neededRepetitions).map((value) => daysWithRepetition).flat(); 
-  
+  const neededRepetitions =
+    leastCommonMultiple(differentPairs * rotationFrequency, 5) /
+    (differentPairs * rotationFrequency);
+  const repeatEveryWeeks =
+    leastCommonMultiple(differentPairs * rotationFrequency, 5) / 5;
+  const daysUntilDate: Rotations[] = _.range(neededRepetitions)
+    .map((value) => daysWithRepetition)
+    .flat();
+
   let nextDay = nextMonday();
   const daysWithDate = daysUntilDate.map((day) => {
     const dayWithDate = {
@@ -62,9 +68,11 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
         <tbody>{rows}</tbody>
       </table>
       <div>
-        Iterations needed for {Math.ceil(differentPairs / 2)} different pairs rotating every{" "}
-        {rotationFrequency} day(s) in 5 days week is{" "}
-        {leastCommonMultiple(differentPairs * rotationFrequency, 5)}
+        <ul>
+          <li>Rotation frequency: {rotationFrequency} day(s)</li>
+          <li>Different pairs: {Math.ceil(differentPairs / 2)}</li>
+          <li>The cycle is every {repeatEveryWeeks} week(s)</li>
+        </ul>
       </div>
     </div>
   );
