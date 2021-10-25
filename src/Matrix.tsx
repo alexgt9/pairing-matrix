@@ -7,7 +7,7 @@ type MatrixProps = {
 };
 
 export type Pair = [string, string];
-type RotationDay = {
+type Rotations = {
   pairs: Pair[];
   colorClass: string;
 };
@@ -36,11 +36,11 @@ const Matrix = ({ names }: MatrixProps) => {
     return pairColor;
   };
 
-  const rotationDays: RotationDay[] = robin(names).map((pairs: Pair[]) => {
+  const rotationDays: Rotations[] = robin(names).map((pairs: Pair[]) => {
     return {
       pairs,
       colorClass: pairColorClass(pairs),
-    } as RotationDay;
+    } as Rotations;
   });
   const differentPairs = rotationDays.length;
 

@@ -28,3 +28,31 @@ export const robin = (participants: string[]) => {
   }
   return rounds;
 };
+
+const SATURDAY = 6;
+const SUNDAY = 0;
+export const getNextWorkingDay = (date: Date): Date => {
+    let nextWorkingDay = addDay(date);
+    if (
+        nextWorkingDay.getDay() !== SATURDAY &&
+        nextWorkingDay.getDay() !== SUNDAY
+    ) {
+        return nextWorkingDay;
+    }
+
+    return getNextWorkingDay(nextWorkingDay);
+};
+
+const addDay = (date: Date) => {
+const newDate = new Date(date.valueOf());
+newDate.setDate(date.getDate() + 1);
+
+return newDate;
+};
+
+export const nextMonday = () => {
+    const today = new Date();
+    today.setDate(today.getDate() + ((1 + 7 - today.getDay()) % 7 || 7));
+
+    return today;
+};
