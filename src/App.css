@@ -18,6 +18,12 @@ td {
   padding: 4px;
 }
 
+td li {
+    padding-bottom: 5px;
+    width: max-content;
+    text-align: center;
+}
+
 li {
   list-style-type: none;
 }
