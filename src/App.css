@@ -27,3 +27,27 @@ td li {
 li {
   list-style-type: none;
 }
+
+.pair-1 {
+  background-color: #8BF67E;
+}
+
+.pair-2 {
+  background-color: #7ECBF6;
+}
+
+.pair-3 {
+  background-color: #CB7EF6;
+}
+
+.pair-4 {
+  background-color: #F8B3D9;
+}
+
+.pair-5 {
+  background-color: #E3535F;
+}
+
+.pair-6 {
+  background-color: #F6C87E;
+}

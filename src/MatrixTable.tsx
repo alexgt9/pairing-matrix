@@ -8,6 +8,7 @@ type MatrixTableProps = {
 type Pair = [string, string];
 type RotationDay = {
   pairs: Pair[];
+  colorClass: string; 
 };
 
 const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
@@ -40,7 +41,7 @@ type TableRowProps = {
 
 export const TableRow = ({ days }: TableRowProps) => {
   const cells = days.map((day: RotationDay, index: number) => (
-    <TableCell pairs={day.pairs} />
+    <TableCell pairs={day.pairs} colorClass={day.colorClass} />
   ));
 
   return (
@@ -52,15 +53,16 @@ export const TableRow = ({ days }: TableRowProps) => {
 
 type TableCellProps = {
   pairs: Pair[];
+  colorClass: string;
 };
 
-export const TableCell = ({ pairs }: TableCellProps) => {
+export const TableCell = ({ pairs, colorClass }: TableCellProps) => {
   const listItems = pairs.map((pair: Pair, index: number) => (
     <li key={`${pair[0]}${pair[1]}`}>{`${pair[0]} & ${pair[1]}`}</li>
   ));
 
   return (
-    <td>
+    <td className={colorClass}>
       {listItems}
     </td>
   );
