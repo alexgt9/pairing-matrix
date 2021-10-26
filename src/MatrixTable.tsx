@@ -56,7 +56,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
 
   return (
     <>
-      <CalendarFile days={daysWithDate}/>
+      <CalendarFile days={daysWithDate} repeatEveryNWeeks={repeatEveryWeeks}/>
       <div className="matrix space-y-4 flex flex-col">
         <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">

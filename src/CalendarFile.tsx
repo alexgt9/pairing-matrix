@@ -1,24 +1,30 @@
 import { useState } from "react";
-import { createEvents } from "./CalenadarGenerator";
+import { CalendarEvent, createEvents } from "./CalenadarGenerator";
 import { Pair } from "./Matrix";
 import { PairingDay } from "./MatrixTable";
 
 interface CalendarFileProps {
   days: PairingDay[];
+  repeatEveryNWeeks: number;
 }
 
-const CalendarFile = ({ days }: CalendarFileProps) => {
+const CalendarFile = ({ days, repeatEveryNWeeks }: CalendarFileProps) => {
   const [fileUrl, setFileUrl] = useState("");
 
-  const makeIcsFile = (
-    start: Date,
-    end: Date,
-    summary: string,
-    description: string
-  ) => {
-    const test = createEvents([
-      { start, end, summary, description, recurring_interval: 2 },
-    ]);
+  const makeIcsFile = (days: PairingDay[]) => {
+    const fixedDescription = "https://thoughtworks.zoom.us/j/7163705558";
+    const events = days.map((day: PairingDay) => {
+      const pairsText = day.pairs.map((pair: Pair) => `${pair[0]} & ${pair[1]}`).join("\\n") + "\\n";
+      return {
+        start: day.date,
+        end: day.date,
+        summary: "Pairing pairs",
+        description: [pairsText, fixedDescription].join("\\n"),
+        recurring_interval: repeatEveryNWeeks,
+      } as CalendarEvent;
+    });
+
+    const test = createEvents(events);
 
     const data = new File([test], "calendar.ics", { type: "text/plain" });
 
@@ -34,13 +40,7 @@ const CalendarFile = ({ days }: CalendarFileProps) => {
   };
 
   const onCreateFile = () => {
-    const first = days[0];
-    makeIcsFile(
-      first.date,
-      first.date,
-      "Pairing pairs",
-      first.pairs.map((pair: Pair) => `${pair[0]} & ${pair[1]}`).join("\\n") + "\\n" + "https://thoughtworks.zoom.us/j/7163705558"
-    );
+    makeIcsFile(days);
   };
 
   return (

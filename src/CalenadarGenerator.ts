@@ -1,4 +1,4 @@
-export interface Event {
+export interface CalendarEvent {
   start: Date;
   end: Date;
   summary: string;
@@ -6,7 +6,7 @@ export interface Event {
   recurring_interval: number;
 }
 
-export const createEvents = (events: Event[]) => {
+export const createEvents = (events: CalendarEvent[]) => {
   const headersIcs =
     "BEGIN:VCALENDAR\n" +
     "CALSCALE:GREGORIAN\n" +
@@ -15,19 +15,20 @@ export const createEvents = (events: Event[]) => {
     "VERSION:2.0\n";
   const footersIcs = "END:VCALENDAR";
 
-  const eventsIcs = events.map(createSingleEvent).join();
+  const eventsIcs = events.map(createSingleEvent).join("");
 
   return headersIcs + eventsIcs + footersIcs;
 };
 
-const createSingleEvent = (event: Event) => {
+const createSingleEvent = (event: CalendarEvent, index: number) => {
+  const uid = `pairing-session-${index}`;
   return "BEGIN:VEVENT\n" +
-  "UID:test-1\n" +
+  `UID:${uid}\n` +
   `DTSTART;VALUE=DATE:${convertDate(event.start)}\n` +
   `DTEND;VALUE=DATE:${convertDate(event.end)}\n` +
   `RRULE:FREQ=WEEKLY;INTERVAL=${event.recurring_interval}\n` +
   `SUMMARY:${event.summary}\n` +
-  `DESCRIPTION:${event.description}\n` +
+  `DESCRIPTION:${event.description}\\n\\nUID: ${uid}\n` +
   "END:VEVENT\n";
 };
 
