@@ -58,15 +58,20 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
         Create ics file
       </button>
       {showDownloadButton && (
-        <a
-          onClick={hideDownloadButton}
-          id="Download"
-          href={fileUrl}
-          download="pairing-calendar.ics"
-          className="download-calendar bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 border bg-green-700 rounded"
-        >
-          Download
-        </a>
+        <>
+          <a
+            onClick={hideDownloadButton}
+            id="Download"
+            href={fileUrl}
+            download="pairing-calendar.ics"
+            className="download-calendar bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 border bg-green-700 rounded"
+          >
+            Download
+          </a>
+          <a className="download-calendar bg-transparent hover:underline text-blue-500 font-bold py-2 px-4" target="_blank" href="https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Ccreate-or-edit-an-icalendar-file">
+            See how to import the file 
+          </a>
+        </>
       )}
     </div>
   );
