@@ -40,6 +40,10 @@ li {
   border: 4px dashed #434443;
 }
 
+.pair-legend {
+  border: #434443 3px dashed;
+}
+
 .pair-0 {
   border-color: #d0acef;
 }
