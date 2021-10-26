@@ -5,6 +5,7 @@ import Matrix from "./Matrix";
 const App = () => {
   const [rotationFrequency, setRotationFrequency] = useState("1");
   const [names, setNames] = useState("Alejandro\nPaco\nJavi\nPepe");
+  const [description, setDescription] = useState("");
 
   function updateNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setNames(event.target.value);
@@ -16,6 +17,12 @@ const App = () => {
     setRotationFrequency(event.target.value);
   };
 
+  const onChangeDescription = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setDescription(event.target.value);
+  };
+
   return (
     <div className="App flex items-center flex-col">
       <nav className={"flex items-center justify-center flex-wrap bg-teal-500 p-6"}>
@@ -24,9 +31,9 @@ const App = () => {
           <span className={"font-semibold text-xl tracking-tight"}>Pairing Matrix</span>
         </div>
       </nav>
-      <form className={"w-full max-w-lg"}>
-        <div className={"flex flex-wrap -mx-3 mb-6"}>
-          <div className={"w-full md:w-1/2 px-3 mb-6 md:mb-0"}>
+      <form className={"w-full max-w-4xl"}>
+        <div className={"flex grid-cols-2 flex-wrap -mx-3 mb-6"}>
+          <div className={"row-span-1 px-3 mb-6 md:mb-0"}>
             <label
               className={
                 "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -46,11 +53,9 @@ const App = () => {
             <p className={"text-red-500 text-xs italic"}>
               One participant per line.
             </p>
-          </div>
-          <div className={"w-full md:w-1/2 px-3"}>
             <label
               className={
-                "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 mt-2"
               }
               htmlFor="rotation-frequency"
             >
@@ -64,6 +69,25 @@ const App = () => {
               }
               id="rotation-frequency"
               type="text"
+            />
+          </div>
+          <div className={"w-full md:w-1/2"}>
+            <label
+              className={
+                "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              }
+              htmlFor="description"
+            >
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={onChangeDescription}
+              className={
+                "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              }
+              id="description"
+              placeholder="Introduce extra text for description &#10;Room 1: https://thoughtworks.zoom.us/j/calendarGenerator"
             />
           </div>
         </div>
