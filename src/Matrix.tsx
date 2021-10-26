@@ -4,6 +4,7 @@ import { robin } from "./utils";
 type MatrixProps = {
   names: string[];
   rotationFrequency: number;
+  description: string;
 };
 
 export type Pair = [string, string];
@@ -12,7 +13,7 @@ type Rotations = {
   colorClass: string;
 };
 
-const Matrix = ({ names, rotationFrequency }: MatrixProps) => {
+const Matrix = ({ names, rotationFrequency, description }: MatrixProps) => {
   let pairClassesCount = 0;
   const pairColorClasses: Record<string, string> = {};
 
@@ -39,6 +40,7 @@ const Matrix = ({ names, rotationFrequency }: MatrixProps) => {
     <MatrixTable
       rotationDays={rotationDays}
       rotationFrequency={rotationFrequency}
+      description={description}
     />
   );
 };

@@ -6,20 +6,20 @@ import { PairingDay } from "./MatrixTable";
 interface CalendarFileProps {
   days: PairingDay[];
   repeatEveryNWeeks: number;
+  description: string;
 }
 
-const CalendarFile = ({ days, repeatEveryNWeeks }: CalendarFileProps) => {
+const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProps) => {
   const [fileUrl, setFileUrl] = useState("");
 
   const makeIcsFile = (days: PairingDay[]) => {
-    const fixedDescription = "https://thoughtworks.zoom.us/j/7163705558";
     const events = days.map((day: PairingDay) => {
       const pairsText = day.pairs.map((pair: Pair) => `${pair[0]} & ${pair[1]}`).join("\\n") + "\\n";
       return {
         start: day.date,
         end: day.date,
         summary: "Pairing pairs",
-        description: [pairsText, fixedDescription].join("\\n"),
+        description: [pairsText, description].join("\\n"),
         recurring_interval: repeatEveryNWeeks,
       } as CalendarEvent;
     });

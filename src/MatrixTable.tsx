@@ -5,6 +5,7 @@ import { getNextWorkingDay, leastCommonMultiple, nextMonday } from "./utils";
 type MatrixTableProps = {
   rotationDays: Rotations[];
   rotationFrequency: number;
+  description: string;
 };
 
 type Pair = [string, string];
@@ -19,7 +20,7 @@ export interface PairingDay {
   date: Date;
 };
 
-const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
+const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTableProps) => {
   const differentPairs = rotationDays.length;
 
   const daysWithRepetition: Rotations[] = rotationDays.reduce(
@@ -56,7 +57,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
 
   return (
     <>
-      <CalendarFile days={daysWithDate} repeatEveryNWeeks={repeatEveryWeeks}/>
+      <CalendarFile days={daysWithDate} repeatEveryNWeeks={repeatEveryWeeks} description={description}/>
       <div className="matrix space-y-4 flex flex-col">
         <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">
@@ -86,11 +87,14 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
         </div>
         <div>
           <ul className={"summary-list"}>
-            <li>Different pairs: {differentPairs} (marked by the different colors) 
-              {_.range(differentPairs).map((index: number) => <span className={`border-4 rounded-md border-dashed pair-${index} mx-1 p-1`}>{index + 1}</span>)}
+            <li className="m-2">Different pairs: {differentPairs} (marked by the different colors) 
+              {_.range(differentPairs).map((index: number) => <span key={index} className={`border-4 rounded-md border-dashed pair-${index} mx-1 p-1`}>{index + 1}</span>)}
             </li>
-            <li>The complete cycle is every {repeatEveryWeeks} week(s)</li>
-            <li>This will create {daysWithDate.length} different events in your calendar</li>
+            <li className="m-2">The complete cycle is every {repeatEveryWeeks} week(s)</li>
+            <li className="m-2">This will create {daysWithDate.length} different events in your calendar thar are recurring every {repeatEveryWeeks} week(s)</li>
+            <li role="alert">
+              <p className="alert-box bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">Events has an UID associated (can be seen in the event description) so, importing events again will replace previous ocurrences of the events</p>
+              </li>
           </ul>
         </div>
       </div>

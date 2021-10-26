@@ -92,7 +92,7 @@ const App = () => {
           </div>
         </div>
       </form>
-      <Matrix names={names.split("\n")} rotationFrequency={parseInt(rotationFrequency)}/>
+      <Matrix names={names.split("\n")} rotationFrequency={parseInt(rotationFrequency)} description={description}/>
     </div>
   );
 };

@@ -84,3 +84,8 @@ li {
 .pair-9 {
   border: 3px solid #a6f67e;
 }
+
+.alert-box {
+  background-color: #feebc8;
+  border-color: #F6C87E;
+}
