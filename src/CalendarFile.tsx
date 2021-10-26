@@ -11,6 +11,7 @@ interface CalendarFileProps {
 
 const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProps) => {
   const [fileUrl, setFileUrl] = useState("");
+  const [showDownloadButton, setShowDownloadButton] = useState(false);
 
   const makeIcsFile = (days: PairingDay[]) => {
     const events = days.map((day: PairingDay) => {
@@ -41,6 +42,11 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
 
   const onCreateFile = () => {
     makeIcsFile(days);
+    setShowDownloadButton(true);
+  };
+
+  const hideDownloadButton = () => {
+    setShowDownloadButton(false);
   };
 
   return (
@@ -51,8 +57,9 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
       >
         Create ics file
       </button>
-      {fileUrl && (
+      {showDownloadButton && (
         <a
+          onClick={hideDownloadButton}
           id="Download"
           href={fileUrl}
           download="pairing-calendar.ics"
