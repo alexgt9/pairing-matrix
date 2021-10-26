@@ -93,7 +93,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTab
             <li className="m-2">The complete cycle is every {repeatEveryWeeks} week(s)</li>
             <li className="m-2">This will create {daysWithDate.length} different events in your calendar thar are recurring every {repeatEveryWeeks} week(s)</li>
             <li role="alert">
-              <p className="alert-box bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">Events has an UID associated (can be seen in the event description) so, importing events again will replace previous ocurrences of the events</p>
+              <p className="alert-box bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">Events has an UID associated (can be seen in the event description) so importing events again will replace previous ocurrences of the events</p>
               </li>
           </ul>
         </div>
