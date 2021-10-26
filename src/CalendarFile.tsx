@@ -68,7 +68,7 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
           >
             Download
           </a>
-          <a className="download-calendar bg-transparent hover:underline text-blue-500 font-bold py-2 px-4" target="_blank" href="https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Ccreate-or-edit-an-icalendar-file">
+          <a className="download-calendar bg-transparent hover:underline text-blue-500 font-bold py-2 px-4" target="_blank" rel="noreferrer" href="https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop#zippy=%2Ccreate-or-edit-an-icalendar-file">
             See how to import the file 
           </a>
         </>
