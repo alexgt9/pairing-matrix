@@ -25,10 +25,10 @@ const App = () => {
 
   return (
     <div className="App flex items-center flex-col">
-      <nav className={"flex items-center justify-center flex-wrap bg-teal-500 p-6"}>
+      <nav className={"flex items-center justify-center flex-wrap p-6"}>
         <div className={"flex items-center flex-shrink-0 text-white mr-6"}>
-          <img className="w-1/4" src="/pairing.png" alt="image"/>
-          <span className={"font-semibold text-xl tracking-tight"}>Pairing days calendar</span>
+          <img className="w-1/4" src="/pairing.png" alt="Pairing logo"/>
+          <span className={"font-semibold text-xl tracking-tight text-gray-900"}>Pairing days calendar</span>
         </div>
       </nav>
       <form className={"w-full max-w-4xl"}>
@@ -46,11 +46,11 @@ const App = () => {
               value={names}
               onChange={updateNames}
               className={
-                "appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                "appearance-none block w-full text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               }
               id="participants"
             />
-            <p className={"text-red-500 text-xs italic"}>
+            <p className={"text-xs italic"}>
               One participant per line.
             </p>
             <label
@@ -65,7 +65,7 @@ const App = () => {
               value={rotationFrequency}
               onChange={onChangeRotationFrequency}
               className={
-                "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               }
               id="rotation-frequency"
               type="text"
@@ -84,7 +84,7 @@ const App = () => {
               value={description}
               onChange={onChangeDescription}
               className={
-                "appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               }
               id="description"
               placeholder="Introduce extra text for description &#10;Room 1: https://thoughtworks.zoom.us/j/calendarGenerator"
@@ -92,7 +92,7 @@ const App = () => {
           </div>
         </div>
       </form>
-      <Matrix names={names.split("\n")} rotationFrequency={parseInt(rotationFrequency)} description={description}/>
+      <Matrix names={names.trim().split("\n")} rotationFrequency={parseInt(rotationFrequency)} description={description}/>
     </div>
   );
 };

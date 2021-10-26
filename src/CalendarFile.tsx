@@ -44,7 +44,7 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
   };
 
   return (
-    <div className="flex flex-row space-x-4">
+    <div className="flex flex-row space-x-4 mb-2">
       <button
         onClick={onCreateFile}
         className="create-calendar bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
@@ -56,7 +56,7 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
           id="Download"
           href={fileUrl}
           download="pairing-calendar.ics"
-          className="download-calendar bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+          className="download-calendar bg-green-400 hover:bg-green-600 text-white font-bold py-2 px-4 border bg-green-700 rounded"
         >
           Download
         </a>

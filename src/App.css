@@ -8,16 +8,6 @@
   align-items: baseline;
 }
 
-.create-calendar {
-  background-color: #7ef6e4;
-  border: transparent;
-}
-
-.download-calendar:hover {
-  background-color: #d0acef;
-  color: white;
-}
-
 textarea {
   height: 150px;
 }
