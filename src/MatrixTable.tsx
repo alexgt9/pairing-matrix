@@ -87,7 +87,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
         <div>
           <ul className={"summary-list"}>
             <li>Different pairs: {differentPairs} (marked by the different colors) 
-              {_.range(differentPairs).map((index: number) => <span className={`pair-legend pair-${index} mx-1`}>{index + 1}</span>)}
+              {_.range(differentPairs).map((index: number) => <span className={`border-4 rounded-md border-dashed pair-${index} mx-1 p-1`}>{index + 1}</span>)}
             </li>
             <li>The complete cycle is every {repeatEveryWeeks} week(s)</li>
             <li>This will create {daysWithDate.length} different events in your calendar</li>
@@ -144,7 +144,7 @@ export const TableCell = ({
       <span className={"cell-date"}>
         {date.toLocaleString("es-US", { month: monthStyle, day: "numeric" })}
       </span>
-      <div className={`${colorClass} pair`}>{listItems}</div>
+      <div className={`${colorClass} pair rounded-md`}>{listItems}</div>
     </td>
   );
 };
