@@ -23,18 +23,11 @@ export const createEvents = (events: Event[]) => {
 const createSingleEvent = (event: Event) => {
   return "BEGIN:VEVENT\n" +
   "UID:test-1\n" +
-  "DTSTART;VALUE=DATE:" +
-  convertDate(event.start) +
-  "\n" +
-  "DTEND;VALUE=DATE:" +
-  convertDate(event.end) +
-  "\n" +
-  "SUMMARY:" +
-  event.summary +
-  "\n" +
-  "DESCRIPTION:" +
-  event.description +
-  "\n" +
+  `DTSTART;VALUE=DATE:${convertDate(event.start)}\n` +
+  `DTEND;VALUE=DATE:${convertDate(event.end)}\n` +
+  `RRULE:FREQ=WEEKLY;INTERVAL=${event.recurring_interval}\n` +
+  `SUMMARY:${event.summary}\n` +
+  `DESCRIPTION:${event.description}\n` +
   "END:VEVENT\n";
 };
 

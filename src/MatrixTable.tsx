@@ -1,4 +1,5 @@
 import _ from "lodash";
+import CalendarFile from "./CalendarFile";
 import { getNextWorkingDay, leastCommonMultiple, nextMonday } from "./utils";
 
 type MatrixTableProps = {
@@ -12,7 +13,7 @@ type Rotations = {
   colorClass: string;
 };
 
-type PairingDay = {
+export interface PairingDay {
   pairs: Pair[];
   colorClass: string;
   date: Date;
@@ -54,40 +55,44 @@ const MatrixTable = ({ rotationDays, rotationFrequency }: MatrixTableProps) => {
   ));
 
   return (
-    <div className="matrix space-y-4 flex flex-col">
-      <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Monday
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tuesday
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Wednesday
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Thursday
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Friday
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-x divide-y divide-gray-200">
-            {rows}
-          </tbody>
-        </table>
+    <>
+      <CalendarFile days={daysWithDate}/>
+      <div className="matrix space-y-4 flex flex-col">
+        <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Monday
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Tuesday
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Wednesday
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Thursday
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Friday
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-x divide-y divide-gray-200">
+              {rows}
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <ul className={"summary-list"}>
+            <li>Different pairs: {differentPairs}</li>
+            <li>The cycle is every {repeatEveryWeeks} week(s)</li>
+            <li>This will create {daysWithDate.length} different events in your calendar</li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <ul className={"summary-list"}>
-          <li>Different pairs: {differentPairs}</li>
-          <li>The cycle is every {repeatEveryWeeks} week(s)</li>
-        </ul>
-      </div>
-    </div>
+    </>
   );
 };
 

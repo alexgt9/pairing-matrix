@@ -1,4 +1,3 @@
-import CalendarFile from "./CalendarFile";
 import MatrixTable from "./MatrixTable";
 import { robin } from "./utils";
 
@@ -37,13 +36,10 @@ const Matrix = ({ names, rotationFrequency }: MatrixProps) => {
   });
 
   return (
-    <>
-      <CalendarFile/>
-      <MatrixTable
-        rotationDays={rotationDays}
-        rotationFrequency={rotationFrequency}
-      />
-    </>
+    <MatrixTable
+      rotationDays={rotationDays}
+      rotationFrequency={rotationFrequency}
+    />
   );
 };
 
