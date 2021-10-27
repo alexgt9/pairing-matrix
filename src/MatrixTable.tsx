@@ -96,8 +96,8 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTab
               <tbody className="bg-white divide-x divide-y divide-gray-200">
                 {rows}
                 {weeks > maxWeeksToShow && 
-                  <tr><td onClick={onShowMoreWeeksClick} colSpan={5} className="p-2 bg-orange-100 border-b-1 border-orange-400 text-orange-700">
-                    <span className="p-2 bg-orange-100 border-b-1 border-orange-400 text-orange-700 hover:text-orange-900 hover:underline cursor-pointer">{`${weeks} more weeks... (show more)`}</span>
+                  <tr><td colSpan={5} className="p-2 bg-orange-100 border-b-1 border-orange-400 text-orange-700">
+                    <span onClick={onShowMoreWeeksClick} className="p-2 bg-orange-100 border-b-1 border-orange-400 text-orange-700 hover:text-orange-900 hover:underline cursor-pointer">{`${weeks} more weeks... (show more)`}</span>
                   </td></tr>}
               </tbody>
             </table>
