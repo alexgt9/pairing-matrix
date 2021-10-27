@@ -105,7 +105,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTab
           <div>
             <ul className={"summary-list"}>
               <li className="m-2">Different pairs: {differentPairs} (marked by the different colors) 
-                {_.range(differentPairs).map((index: number) => <span key={index} className={`border-4 rounded-md border-dashed pair-${index} mx-1 p-1`}>{index + 1}</span>)}
+                {_.range(differentPairs).map((index: number) => <span key={index} className={`border-4 rounded-md border-dashed pair-${index % 10} mx-1 p-1`}>{index + 1}</span>)}
               </li>
               <li className="m-2">The complete cycle is every {repeatEveryWeeks} week(s)</li>
               <li className="m-2">This will create {daysWithDate.length} different events in your calendar thar are recurring every {repeatEveryWeeks} week(s)</li>

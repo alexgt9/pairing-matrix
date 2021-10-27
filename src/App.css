@@ -48,7 +48,7 @@ li {
 }
 
 .pair-3 {
-  border-color: #CB7EF6;
+  border-color: rgb(146, 64, 14);
 }
 
 .pair-4 {
@@ -68,11 +68,11 @@ li {
 }
 
 .pair-8 {
-  border: 3px solid #f6e87e;
+  border-color: #f6e87e;
 }
 
 .pair-9 {
-  border: 3px solid #a6f67e;
+  border-color: rgb(5, 150, 105);
 }
 
 .alert-box {

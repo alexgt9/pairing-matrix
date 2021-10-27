@@ -22,7 +22,7 @@ const Matrix = ({ names, rotationFrequency, description }: MatrixProps) => {
       (previous, pair): string => previous + pair[0] + pair[1],
       ""
     );
-    const pairColor = pairColorClasses[hash] || `pair-${pairClassesCount % 9}`;
+    const pairColor = pairColorClasses[hash] || `pair-${pairClassesCount % 10}`;
     pairClassesCount += 1;
     pairColorClasses[hash] = pairColor;
 
