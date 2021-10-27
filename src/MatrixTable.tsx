@@ -51,7 +51,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTab
     return dayWithDate;
   });
 
-  const rows = _.chunk(daysWithDate, 5).map((week, index) => (
+  const rows = _.chunk(daysWithDate, 5).slice(0, 8).map((week, index) => (
     <TableRow key={index} rowNumber={index} days={week} />
   ));
 
