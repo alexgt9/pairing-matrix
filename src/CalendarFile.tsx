@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { CalendarEvent, createEvents } from "./CalenadarGenerator";
-import { PairingDay } from "./Matrix";
+import { CalendarEvent, createEvents } from "./CalendarGenerator";
+import { PairingDay } from "./PairingApp";
 import { Pair } from "./types";
 
 export interface CalendarFileProps {

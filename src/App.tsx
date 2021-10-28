@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import Matrix from "./Matrix";
+import PairingApp from "./PairingApp";
 
 const App = () => {
   const [rotationFrequency, setRotationFrequency] = useState("1");
@@ -116,7 +116,7 @@ const App = () => {
           </div>
         </div>
       </form>
-      <Matrix
+      <PairingApp
         names={names.trim().split("\n")}
         rotationFrequency={parseInt(rotationFrequency || "1")}
         description={description}

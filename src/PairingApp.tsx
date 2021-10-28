@@ -1,4 +1,4 @@
-import MatrixTable from "./MatrixTable";
+import PairingCalendar from "./PairingCalendar";
 import { Pair } from "./types";
 import { robin } from "./utils";
 
@@ -13,14 +13,14 @@ export interface PairingDay {
   date: Date;
 };
 
-export interface MatrixProps {
+export interface PairingAppProps {
   names: string[];
   rotationFrequency: number;
   description: string;
   untilDate?: Date;
 };
 
-const Matrix = ({ names, rotationFrequency, description, untilDate }: MatrixProps) => {
+const PairingApp = ({ names, rotationFrequency, description, untilDate }: PairingAppProps) => {
   let pairClassesCount = 0;
   const pairColorClasses: Record<string, string> = {};
 
@@ -44,7 +44,7 @@ const Matrix = ({ names, rotationFrequency, description, untilDate }: MatrixProp
   });
 
   return (
-    <MatrixTable
+    <PairingCalendar
       rotationDays={rotationDays}
       rotationFrequency={rotationFrequency}
       description={description}
@@ -53,4 +53,4 @@ const Matrix = ({ names, rotationFrequency, description, untilDate }: MatrixProp
   );
 };
 
-export default Matrix;
+export default PairingApp;
