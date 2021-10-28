@@ -58,9 +58,10 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }
 
     return dayWithDate;
   });
+  const daysFilteredByEndDate = daysWithDate.filter((day: PairingDay) => untilDate ? day.date < untilDate : true);
 
-  const weeks = _.chunk(daysWithDate, 5).length;
-  const rows = _.chunk(daysWithDate, 5).slice(0, maxWeeksToShow).map((week, index) => (
+  const weeks = _.chunk(daysFilteredByEndDate, 5).length;
+  const rows = _.chunk(daysFilteredByEndDate, 5).slice(0, maxWeeksToShow).map((week, index) => (
     <TableRow key={index} rowNumber={index} days={week} />
   ));
 
@@ -72,7 +73,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }
         <a className="underline ml-2" href="https://en.wikipedia.org/wiki/Conway%27s_law" target="_blank" rel="noreferrer">check this out</a>
       </p></div> :
       <>
-        <CalendarFile days={daysWithDate} repeatEveryNWeeks={repeatEveryWeeks} description={description} untilDate={untilDate}/>
+        <CalendarFile days={daysFilteredByEndDate} repeatEveryNWeeks={repeatEveryWeeks} description={description} untilDate={untilDate}/>
         <div className="matrix space-y-4 flex flex-col">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
@@ -110,7 +111,8 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }
                 {_.range(differentPairs).map((index: number) => <span key={index} className={`border-4 rounded-md border-dashed pair-${index % 10} mx-1 p-1`}>{index + 1}</span>)}
               </li>
               <li className="m-2">The complete cycle is every {repeatEveryWeeks} week(s)</li>
-              <li className="m-2">This will create {daysWithDate.length} different events in your calendar that are recurring every {repeatEveryWeeks} week(s)</li>
+              <li className="m-2">This will create {daysFilteredByEndDate.length} different events in your calendar that are recurring every {repeatEveryWeeks} week(s)</li>
+              { untilDate &&  <li className="m-2">Recurring will end at {untilDate.toLocaleString("en-US", { month: "long", day: "numeric" })}</li>}
               <li role="alert">
                 <p className="alert-box bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">Events has an UID associated (can be seen in the event description) so importing events again will replace previous ocurrences of the events</p>
                 </li>
