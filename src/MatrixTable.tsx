@@ -1,29 +1,22 @@
 import _ from "lodash";
 import { useState } from "react";
 import CalendarFile from "./CalendarFile";
+import { PairingDay, Rotations } from "./Matrix";
+import { Pair } from "./types";
 import { getNextWorkingDay, leastCommonMultiple, nextMonday } from "./utils";
 
-type MatrixTableProps = {
+
+const TWO_MONTHS = 8;
+const INFINITE = 1000;
+const DAYS_A_WEEK = 5;
+const DEFAULT_ROTATION_FREQUENCY = 1;
+
+export interface MatrixTableProps {
   rotationDays: Rotations[];
   rotationFrequency: number;
   description: string;
   untilDate?: Date;
 };
-
-type Pair = [string, string];
-type Rotations = {
-  pairs: Pair[];
-  colorClass: string;
-};
-
-export interface PairingDay {
-  pairs: Pair[];
-  colorClass: string;
-  date: Date;
-};
-
-const TWO_MONTHS = 8;
-const INFINITE = 1000;
 
 const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }: MatrixTableProps) => {
   const differentPairs = rotationDays.length;
@@ -33,20 +26,20 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }
   const daysWithRepetition: Rotations[] = rotationDays.reduce(
     (repeatedDays, day) => [
       ...repeatedDays,
-      ...Array(rotationFrequency || 1).fill(day),
+      ...Array(rotationFrequency || DEFAULT_ROTATION_FREQUENCY).fill(day),
     ],
     [] as Rotations[]
   );
 
   const neededRepetitions =
-    leastCommonMultiple(differentPairs * rotationFrequency, 5) /
+    leastCommonMultiple(differentPairs * rotationFrequency, DAYS_A_WEEK) /
     (differentPairs * rotationFrequency);
   const daysUntilDate: Rotations[] = _.range(neededRepetitions)
     .map(() => daysWithRepetition)
     .flat();
     
   const repeatEveryWeeks =
-    leastCommonMultiple(differentPairs * rotationFrequency, 5) / 5;
+    leastCommonMultiple(differentPairs * rotationFrequency, DAYS_A_WEEK) / DAYS_A_WEEK;
 
   let nextDay = nextMonday();
   const daysWithDate = daysUntilDate.map((day) => {
@@ -60,8 +53,8 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }
   });
   const daysFilteredByEndDate = daysWithDate.filter((day: PairingDay) => untilDate ? day.date < untilDate : true);
 
-  const weeks = _.chunk(daysFilteredByEndDate, 5).length;
-  const rows = _.chunk(daysFilteredByEndDate, 5).slice(0, maxWeeksToShow).map((week, index) => (
+  const weeks = _.chunk(daysFilteredByEndDate, DAYS_A_WEEK).length;
+  const rows = _.chunk(daysFilteredByEndDate, DAYS_A_WEEK).slice(0, maxWeeksToShow).map((week, index) => (
     <TableRow key={index} rowNumber={index} days={week} />
   ));
 
@@ -112,7 +105,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }
               </li>
               <li className="m-2">The complete cycle is every {repeatEveryWeeks} week(s)</li>
               <li className="m-2">This will create {daysFilteredByEndDate.length} different events in your calendar that are recurring every {repeatEveryWeeks} week(s)</li>
-              { untilDate &&  <li className="m-2">Recurring will end at {untilDate.toLocaleString("en-US", { month: "long", day: "numeric" })}</li>}
+              { untilDate &&  <li className="m-2">Recurrence will end at {untilDate.toLocaleString("en-US", { month: "long", day: "numeric" })}</li>}
               <li role="alert">
                 <p className="alert-box bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">Events has an UID associated (can be seen in the event description) so importing events again will replace previous ocurrences of the events</p>
                 </li>

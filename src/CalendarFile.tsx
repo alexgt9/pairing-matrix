@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { CalendarEvent, createEvents } from "./CalenadarGenerator";
-import { Pair } from "./Matrix";
-import { PairingDay } from "./MatrixTable";
+import { PairingDay } from "./Matrix";
+import { Pair } from "./types";
 
-interface CalendarFileProps {
+export interface CalendarFileProps {
   days: PairingDay[];
   repeatEveryNWeeks: number;
   description: string;

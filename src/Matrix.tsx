@@ -1,13 +1,19 @@
 import MatrixTable from "./MatrixTable";
+import { Pair } from "./types";
 import { robin } from "./utils";
 
-export type Pair = [string, string];
-type Rotations = {
+export interface Rotations {
   pairs: Pair[];
   colorClass: string;
 };
 
-type MatrixProps = {
+export interface PairingDay {
+  pairs: Pair[];
+  colorClass: string;
+  date: Date;
+};
+
+export interface MatrixProps {
   names: string[];
   rotationFrequency: number;
   description: string;
@@ -15,7 +21,6 @@ type MatrixProps = {
 };
 
 const Matrix = ({ names, rotationFrequency, description, untilDate }: MatrixProps) => {
-  console.log(untilDate);
   let pairClassesCount = 0;
   const pairColorClasses: Record<string, string> = {};
 
