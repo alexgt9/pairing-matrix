@@ -107,13 +107,13 @@ const TableCell = ({
 
   return (
     <td
-      className="px-6 py-4 whitespace-nowrap border-gray-400"
+      className="px-6 py-2 whitespace-nowrap border-gray-400"
       key={coordinates}
     >
-      <span className={"cell-date"}>
+      <span className={"font-bold"}>
         {date.toLocaleString("es-US", { month: monthStyle, day: "numeric" })}
       </span>
-      <div className={`${colorClass} pair rounded-md`}>{listItems}</div>
+      <div className={`${colorClass} py-2 border-4 border-dashed rounded-md mt-2`}>{listItems}</div>
     </td>
   );
 };

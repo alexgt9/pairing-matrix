@@ -1,7 +1,7 @@
 const ConwaysLawAlert = () => {
   return (
     <div>
-      <p className="alert-box bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">
+      <p className="bg-orange-200 border-l-4 border-orange-500 text-orange-700 p-4">
         The participants & rotation frequency numbers are so high that probably
         you don't want to know the results,
         <a
