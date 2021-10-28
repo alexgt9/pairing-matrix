@@ -2,6 +2,8 @@ import "./App.css";
 import { useState } from "react";
 import PairingApp from "./PairingApp";
 
+const DEFAULT_ROTATION_FREQUENCY = 1;
+
 const App = () => {
   const [rotationFrequency, setRotationFrequency] = useState("1");
   const [names, setNames] = useState("Alejandro\nJavi\nLaura\nElna");
@@ -26,6 +28,16 @@ const App = () => {
 
   const onChangeUntilDate = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUntilDate(event.target.value);
+  };
+
+  const isValidRotationFrequency = (value: string): boolean => {
+    const almostNumber = parseInt(value);
+
+    return !!almostNumber && almostNumber > 0;
+  };
+
+  const parseIntOrDefault = (value: string): number => {
+    return isValidRotationFrequency(value) ? parseInt(value) : DEFAULT_ROTATION_FREQUENCY;
   };
 
   return (
@@ -77,6 +89,7 @@ const App = () => {
               id="rotation-frequency"
               type="text"
             />
+            { !isValidRotationFrequency(rotationFrequency) && <p className={"text-red-600 text-xs italic mt-2"}>Wrong value! Using default (1).</p>}
           </div>
           <div className={"w-full md:w-1/2"}>
             <label
@@ -118,7 +131,7 @@ const App = () => {
       </form>
       <PairingApp
         names={names.trim().split("\n")}
-        rotationFrequency={parseInt(rotationFrequency || "1")}
+        rotationFrequency={parseIntOrDefault(rotationFrequency)}
         description={description}
         untilDate={untilDate ? new Date(untilDate) : undefined}
       />

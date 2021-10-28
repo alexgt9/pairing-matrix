@@ -21,7 +21,6 @@ const PairingCalendar = ({
   description,
   untilDate,
 }: PairingCalendarProps) => {
-  // lcm(5 * 2 , 5) / 5 * 2
   const differentPairs = rotationDays.length;
   const daysPerSingleCycle = differentPairs * rotationFrequency;
   const timesToCompleteFullCycle =
@@ -35,7 +34,7 @@ const PairingCalendar = ({
     [] as Rotations[]
   );
   const daysUntilCompleteFullCycle: Rotations[] = Array(
-    timesToCompleteFullCycle
+    timesToCompleteFullCycle || 1
   )
     .fill(daysWithRotationFrequency)
     .flat();
