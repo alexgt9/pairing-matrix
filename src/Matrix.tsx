@@ -1,19 +1,21 @@
 import MatrixTable from "./MatrixTable";
 import { robin } from "./utils";
 
-type MatrixProps = {
-  names: string[];
-  rotationFrequency: number;
-  description: string;
-};
-
 export type Pair = [string, string];
 type Rotations = {
   pairs: Pair[];
   colorClass: string;
 };
 
-const Matrix = ({ names, rotationFrequency, description }: MatrixProps) => {
+type MatrixProps = {
+  names: string[];
+  rotationFrequency: number;
+  description: string;
+  untilDate?: Date;
+};
+
+const Matrix = ({ names, rotationFrequency, description, untilDate }: MatrixProps) => {
+  console.log(untilDate);
   let pairClassesCount = 0;
   const pairColorClasses: Record<string, string> = {};
 
@@ -41,6 +43,7 @@ const Matrix = ({ names, rotationFrequency, description }: MatrixProps) => {
       rotationDays={rotationDays}
       rotationFrequency={rotationFrequency}
       description={description}
+      untilDate={untilDate}
     />
   );
 };

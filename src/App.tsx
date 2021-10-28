@@ -6,6 +6,7 @@ const App = () => {
   const [rotationFrequency, setRotationFrequency] = useState("1");
   const [names, setNames] = useState("Alejandro\nJavi\nLaura\nElna");
   const [description, setDescription] = useState("");
+  const [untilDate, setUntilDate] = useState<string>();
 
   function updateNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setNames(event.target.value);
@@ -23,12 +24,20 @@ const App = () => {
     setDescription(event.target.value);
   };
 
+  const onChangeUntilDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUntilDate(event.target.value);
+  };
+
   return (
     <div className="App flex items-center flex-col">
       <nav className={"flex items-center justify-center flex-wrap p-6"}>
         <div className={"flex items-center flex-shrink-0 text-white mr-6"}>
-          <img className="w-1/4" src="/pairing.png" alt="Pairing logo"/>
-          <span className={"font-semibold text-xl tracking-tight text-gray-900"}>Pairing days calendar</span>
+          <img className="w-1/4" src="/pairing.png" alt="Pairing logo" />
+          <span
+            className={"font-semibold text-xl tracking-tight text-gray-900"}
+          >
+            Pairing days calendar
+          </span>
         </div>
       </nav>
       <form className={"w-full max-w-4xl"}>
@@ -50,9 +59,7 @@ const App = () => {
               }
               id="participants"
             />
-            <p className={"text-xs italic"}>
-              One participant per line.
-            </p>
+            <p className={"text-xs italic"}>One participant per line.</p>
             <label
               className={
                 "block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 mt-2"
@@ -89,10 +96,32 @@ const App = () => {
               id="description"
               placeholder="Introduce extra text for description &#10;Room 1: https://thoughtworks.zoom.us/j/calendarGenerator"
             />
+            <label
+              className={
+                "mt-9 block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              }
+              htmlFor="until-date"
+            >
+              Create events until date?
+            </label>
+            <input
+              onChange={onChangeUntilDate}
+              className={
+                "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              }
+              id="until-date"
+              type="date"
+            />
+            <p className={"text-xs italic mt-2"}>Leave empty for non ending.</p>
           </div>
         </div>
       </form>
-      <Matrix names={names.trim().split("\n")} rotationFrequency={parseInt(rotationFrequency || "1")} description={description}/>
+      <Matrix
+        names={names.trim().split("\n")}
+        rotationFrequency={parseInt(rotationFrequency || "1")}
+        description={description}
+        untilDate={untilDate ? new Date(untilDate) : undefined}
+      />
     </div>
   );
 };

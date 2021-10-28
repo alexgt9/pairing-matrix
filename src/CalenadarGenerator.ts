@@ -4,6 +4,7 @@ export interface CalendarEvent {
   summary: string;
   description: string;
   recurring_interval: number;
+  until_date?: Date;
 }
 
 export const createEvents = (events: CalendarEvent[]) => {
@@ -22,11 +23,14 @@ export const createEvents = (events: CalendarEvent[]) => {
 
 const createSingleEvent = (event: CalendarEvent, index: number) => {
   const uid = `pairing-session-${index}`;
+  const rrule = ["FREQ=WEEKLY", `INTERVAL=${event.recurring_interval}`];
+  event.until_date && rrule.push(`UNTIL=${convertDate(event.until_date)}`);
+
   return "BEGIN:VEVENT\n" +
   `UID:${uid}\n` +
   `DTSTART;VALUE=DATE:${convertDate(event.start)}\n` +
   `DTEND;VALUE=DATE:${convertDate(event.end)}\n` +
-  `RRULE:FREQ=WEEKLY;INTERVAL=${event.recurring_interval}\n` +
+  `RRULE:${rrule.join(";")}\n` +
   `SUMMARY:${event.summary}\n` +
   `DESCRIPTION:${event.description}\\n\\nUID: ${uid}\n` +
   "END:VEVENT\n";

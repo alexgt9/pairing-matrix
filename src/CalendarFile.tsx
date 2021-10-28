@@ -7,9 +7,10 @@ interface CalendarFileProps {
   days: PairingDay[];
   repeatEveryNWeeks: number;
   description: string;
+  untilDate?: Date;
 }
 
-const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProps) => {
+const CalendarFile = ({ days, repeatEveryNWeeks, description, untilDate }: CalendarFileProps) => {
   const [fileUrl, setFileUrl] = useState("");
   const [showDownloadButton, setShowDownloadButton] = useState(false);
 
@@ -22,6 +23,7 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description }: CalendarFileProp
         summary: "Pairing pairs",
         description: [pairsText, description].join("\\n"),
         recurring_interval: repeatEveryNWeeks,
+        until_date: untilDate,
       } as CalendarEvent;
     });
 

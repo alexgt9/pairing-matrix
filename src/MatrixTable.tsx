@@ -7,6 +7,7 @@ type MatrixTableProps = {
   rotationDays: Rotations[];
   rotationFrequency: number;
   description: string;
+  untilDate?: Date;
 };
 
 type Pair = [string, string];
@@ -24,7 +25,7 @@ export interface PairingDay {
 const TWO_MONTHS = 8;
 const INFINITE = 1000;
 
-const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTableProps) => {
+const MatrixTable = ({ rotationDays, rotationFrequency, description, untilDate }: MatrixTableProps) => {
   const differentPairs = rotationDays.length;
 
   const [maxWeeksToShow, setMaxWeeksToShow] = useState(TWO_MONTHS);
@@ -40,11 +41,12 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTab
   const neededRepetitions =
     leastCommonMultiple(differentPairs * rotationFrequency, 5) /
     (differentPairs * rotationFrequency);
+  const daysUntilDate: Rotations[] = _.range(neededRepetitions)
+    .map(() => daysWithRepetition)
+    .flat();
+    
   const repeatEveryWeeks =
     leastCommonMultiple(differentPairs * rotationFrequency, 5) / 5;
-  const daysUntilDate: Rotations[] = _.range(neededRepetitions)
-    .map((value) => daysWithRepetition)
-    .flat();
 
   let nextDay = nextMonday();
   const daysWithDate = daysUntilDate.map((day) => {
@@ -70,7 +72,7 @@ const MatrixTable = ({ rotationDays, rotationFrequency, description }: MatrixTab
         <a className="underline ml-2" href="https://en.wikipedia.org/wiki/Conway%27s_law" target="_blank" rel="noreferrer">check this out</a>
       </p></div> :
       <>
-        <CalendarFile days={daysWithDate} repeatEveryNWeeks={repeatEveryWeeks} description={description}/>
+        <CalendarFile days={daysWithDate} repeatEveryNWeeks={repeatEveryWeeks} description={description} untilDate={untilDate}/>
         <div className="matrix space-y-4 flex flex-col">
           <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
