@@ -135,6 +135,7 @@ const App = () => {
         description={description}
         untilDate={untilDate ? new Date(untilDate) : undefined}
       />
+      <div className="mt-2">Made with <span className="text-red-400" style={{display: "contents"}}>&#9829;</span> by <a className="text-blue-500" href="https://github.com/alexgt9" target="_blank" rel="noreferrer">Alejandro Batanero</a></div>
     </div>
   );
 };

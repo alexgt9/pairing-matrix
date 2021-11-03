@@ -1,4 +1,5 @@
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
+const { fontFamily } = require('tailwindcss/defaultTheme');
 
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
@@ -9,6 +10,10 @@ module.exports = {
       ...colors,
       transparent: 'transparent',
       current: 'currentColor'
+    },
+    fontFamily: {
+      ...fontFamily,
+      'sans': ['Roboto', 'ui-sans-serif', 'system-ui']
     }
   },
   variants: {
