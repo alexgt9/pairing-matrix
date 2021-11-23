@@ -21,7 +21,7 @@ const CalendarFile = ({ days, repeatEveryNWeeks, description, untilDate }: Calen
         start: day.date,
         end: day.date,
         summary: "Pairing pairs",
-        description: [pairsText, description].join("\\n"),
+        description: [pairsText, description].join("\\n").replace(/(\r\n|\n|\r)/gm, "\\n"),
         recurring_interval: repeatEveryNWeeks,
         until_date: untilDate,
       } as CalendarEvent;
