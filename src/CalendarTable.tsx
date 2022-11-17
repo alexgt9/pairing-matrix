@@ -111,7 +111,7 @@ const TableCell = ({
       key={coordinates}
     >
       <span className={"font-bold"}>
-        {date.toLocaleString("es-US", { month: monthStyle, day: "numeric" })}
+        {date.toLocaleString("en-US", { month: monthStyle, day: "numeric" })}
       </span>
       <div className={`${colorClass} py-2 border-4 border-dashed rounded-md mt-2`}>{listItems}</div>
     </td>
