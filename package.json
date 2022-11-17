@@ -48,5 +48,8 @@
   "devDependencies": {
     "autoprefixer": "^9",
     "postcss": "^7"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
