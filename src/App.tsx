@@ -72,7 +72,7 @@ const App = () => {
               value={names}
               onChange={updateNames}
               className={
-                "h-40 appearance-none block w-full text-gray-700 rounded border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                "h-40 appearance-none block w-full text-gray-700 rounded border-2 border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               }
               id="participants"
             />
