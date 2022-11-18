@@ -4,7 +4,7 @@
 set -e
 
 # build
-yarn build
+yarn build --base=/pairing-matrix/
 
 # navigate into the build output directory
 cd dist

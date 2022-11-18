@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://alegt9.github.io/pairing-matrix",
+  "homepage": "https://alexgt9.github.io/pairing-matrix",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
