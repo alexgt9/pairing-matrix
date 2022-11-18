@@ -54,7 +54,7 @@ const App = () => {
           <span
             className={"font-semibold text-xl tracking-tight text-gray-900"}
           >
-            Pairing days calendar
+            Pairing calendar
           </span>
         </div>
       </nav>
