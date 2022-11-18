@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import PairingApp from "./PairingApp";
+import pairingUrl from "./assets/pairing.png";
 
 const DEFAULT_ROTATION_FREQUENCY = 1;
 
@@ -49,7 +50,7 @@ const App = () => {
       </a>
       <nav className={"flex items-center justify-center flex-wrap p-6"}>
         <div className={"flex items-center flex-shrink-0 text-white mr-6"}>
-          <img className="w-1/4" src="/pairing.png" alt="Pairing logo" />
+          <img className="w-1/4" src={pairingUrl} alt="Pairing logo" />
           <span
             className={"font-semibold text-xl tracking-tight text-gray-900"}
           >
