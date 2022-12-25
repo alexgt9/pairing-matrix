@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <Calendar />,
       },
       {
@@ -27,7 +27,9 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+], {
+  basename: "/pairing-matrix",
+});
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
