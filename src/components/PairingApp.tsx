@@ -1,6 +1,6 @@
 import PairingCalendar from "./PairingCalendar";
-import { Pair } from "./types";
-import { robin } from "./utils";
+import { Pair } from "../types";
+import { robin } from "../services/utils";
 
 export interface Rotations {
   pairs: Pair[];
