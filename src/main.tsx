@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     ],
   },
 ], {
-  basename: "/pairing-matrix",
+  basename: import.meta.env.VITE_APP_BASENAME,
 });
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
