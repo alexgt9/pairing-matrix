@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { useState } from "react";
 import { PairingDay } from "./PairingApp";
-import { Pair } from "./types";
+import { Pair } from "../types";
 
 const TWO_MONTHS = 8;
 const INFINITE = 1000;
