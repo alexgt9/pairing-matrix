@@ -12,6 +12,6 @@ Runs the app in the development mode.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `deploy.sh`
+### Deploy
 
-It will deploy the app into github pages https://alexgt9.github.io/pairing-matrix/
+Every commit will be deployed automatically to github pages
