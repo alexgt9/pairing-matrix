@@ -1,17 +1,38 @@
+import { Request, Response } from "express";
+
 const functions = require("firebase-functions");
 // The Firebase Admin SDK to access Firestore.
 const admin = require("firebase-admin");
 admin.initializeApp();
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+export const getCalendarInfo = functions.https.onRequest(async (request: Request, response: Response) => {
+  const apiKey = request.headers["x-api-key"];
 
-export const helloWorld = functions.https.onRequest(async (request: any, response: any) => {
-  const writeResult = await admin.firestore().collection("extreme-programming").add({description: "From cloud function"});
-  functions.logger.info("Hello logs!", {structuredData: true});
+  const doc = await admin.firestore().collection("extreme-programming").doc(apiKey).get();
+
+  if (!doc.exists) {
+    console.log("No such document!");
+
+    response.sendStatus(404);
+  } else {
+    response.json(doc.data());
+  }
+});
+
+export const setCalendarInfo = functions.https.onRequest(async (request: Request, response: Response) => {
+  const apiKey = request.headers["x-api-key"];
+  const data = {
+    description: request.body.description ?? "",
+    pairs: request.body.pairs ?? ["Alejandro", "Javi", "Laura", "Elna"],
+    "rotation-frequency": request.body["rotation-frequency"] ?? 1,
+    "until-date": request.body["until-date"] ?? null,
+  };
+
+  const result = await admin.firestore().collection("extreme-programming").doc(apiKey).set(data);
+
   response.json({
-    message: "Hello from Firebase!",
-    result: `Message with ID: ${writeResult.id} added.`,
+    result,
+    data
   });
 });
 
