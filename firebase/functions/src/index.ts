@@ -5,34 +5,65 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
+const cors = require("cors")({
+  origin: true,
+});
+
 export const getCalendarInfo = functions.https.onRequest(async (request: Request, response: Response) => {
+  if (request.method !== "GET") {
+    response.status(403).send("Forbidden!");
+    return;
+  }
+
   const apiKey = request.headers["x-api-key"];
 
-  const doc = await admin.firestore().collection("extreme-programming").doc(apiKey).get();
-
-  if (!doc.exists) {
-    console.log("No such document!");
-
-    response.sendStatus(404);
-  } else {
-    response.json(doc.data());
+  if (!apiKey) {
+    response.status(403).send("Forbidden!");
+    return;
   }
+
+  cors(request, response, async () => {
+    const doc = await admin.firestore().collection("extreme-programming").doc(apiKey).get();
+
+    if (!doc.exists) {
+      console.log("No such document!");
+
+      response.sendStatus(404);
+    } else {
+      response.json(doc.data());
+    }
+  });
 });
 
 export const setCalendarInfo = functions.https.onRequest(async (request: Request, response: Response) => {
+  if (request.method !== "POST") {
+    response.status(403).send("Forbidden!");
+    return;
+  }
+
   const apiKey = request.headers["x-api-key"];
-  const data = {
-    description: request.body.description ?? "",
-    pairs: request.body.pairs ?? ["Alejandro", "Javi", "Laura", "Elna"],
-    "rotation-frequency": request.body["rotation-frequency"] ?? 1,
-    "until-date": request.body["until-date"] ?? null,
-  };
 
-  const result = await admin.firestore().collection("extreme-programming").doc(apiKey).set(data);
+  if (!apiKey) {
+    response.status(403).send("Forbidden!");
+    return;
+  }
 
-  response.json({
-    result,
-    data
+
+  cors(request, response, async () => {
+    const data = {  
+      description: request.body.description ?? "",
+      pairs: request.body.pairs ?? ["Alejandro", "Javi", "Laura", "Elna"],
+      "rotation-frequency": request.body["rotation-frequency"] ?? 1,
+      "until-date": request.body["until-date"] ?? null,
+      "last-modification": new Date(),
+    };
+
+    const result = await admin.firestore().collection("extreme-programming").doc(apiKey).set(data);
+
+    response.json({
+      result,
+      data
+    });
   });
 });
 
