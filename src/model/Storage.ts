@@ -15,14 +15,6 @@ export const storeDescription = (description: string) => {
     localStorage.setItem("description", description ?? "");
 };
 
-export const fetchRotationFrequency = () : string => {
-    return localStorage.getItem("rotation-frequency") ?? "1";
-};
-
-export const storeRotationFrequency = (rotation: string) => {
-    localStorage.setItem("rotation-frequency", rotation);
-};
-
 export const fetchUntilDate = () : string => {
     return localStorage.getItem("until-date") || "";
 };
