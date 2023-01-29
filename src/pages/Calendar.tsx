@@ -2,123 +2,59 @@ import { useState, useEffect } from "react";
 import PairingApp from "../components/PairingApp";
 import pairingUrl from "../assets/pairing.png";
 import {
-  fetchNames,
-  storeNames,
-  fetchDescription,
-  storeDescription,
-  fetchUntilDate,
-  storeUntilDate,
+  CalendarInfo,
+  fetchCalendarInfo,
+  storeCalendarInfo,
 } from "../model/Storage";
 
 const DEFAULT_ROTATION_FREQUENCY = 1;
 
-type CalendarInfoResponse = {
-  description: string,
-  last_modification: {
-    _second: number,
-    _nanoseconds: number,
-  },
-  pairs: String[],
-  rotation_frequency: number,
-  until_date: string, 
-}
-
-type CalendarInfo = {
-  description: string,
-  names: string,
-  untilDate: string, 
-  rotationFrequency: string,
-}
-
-export default function() {
+export default function () {
   const [calendarInfo, setCalendarInfo] = useState<CalendarInfo>({
     names: "",
     description: "",
     untilDate: "",
     rotationFrequency: DEFAULT_ROTATION_FREQUENCY.toString(),
   });
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout|undefined>();
-  const [names, setNames] = useState("");
-  const [description, setDescription] = useState("");
-  const [untilDate, setUntilDate] = useState<string>("");
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
+  const [apiKey] = useState<string>("9999");
 
-  const dateIsInThePast = untilDate && new Date(untilDate) < new Date();
+  const dateIsInThePast =
+    calendarInfo.untilDate && new Date(calendarInfo.untilDate) < new Date();
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5001/extreme-programming-8281c/us-central1/getCalendarInfo", {
-      headers: {
-        "x-api-key": "9999",
-        "origin": "http://localhost:5173/"
-      }
-    }).then((response) => response.json())
-      .then((result : CalendarInfoResponse) => {
-        setCalendarInfo({
-          names: result.pairs.join("\n"),
-          description: result.description,
-          rotationFrequency: result.rotation_frequency.toString(),
-          untilDate: result.until_date
-        } as CalendarInfo)
-      })
+    fetchCalendarInfo(apiKey)
+      .then((result: CalendarInfo) => setCalendarInfo(result))
       .catch((error) => console.log("error", error));
   }, []);
 
-  const updateCalendarInfoReal = (data : CalendarInfo) => {
-    console.log(data);
-    console.log(data.rotationFrequency);
-    fetch("http://127.0.0.1:5001/extreme-programming-8281c/us-central1/setCalendarInfo", {
-      method: "POST",
-      headers: {
-        "x-api-key": "9999",
-        "origin": "http://localhost:5173/",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        description: data.description,
-        pairs: data.names.split("\n"),
-        rotation_frequency: Number.parseInt(data.rotationFrequency),
-        untilDate: data.untilDate,
-      })
-    }).then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-  }
+  const updateCalendarInfo = (data: CalendarInfo) => {
+    setCalendarInfo(data);
+    timeoutId && clearTimeout(timeoutId);
+    setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
+  };
 
-  const updateCalendarInfo = (data : CalendarInfo) => {
-      timeoutId && clearTimeout(timeoutId);
-      setTimeoutId(setTimeout(() => updateCalendarInfoReal(data), 3000))
-  }
-
-  useEffect(() => {
-    setNames(fetchNames());
-    setDescription(fetchDescription());
-    setUntilDate(fetchUntilDate());
-  }, []);
-
-  function updateNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    storeNames(event.target.value);
-    setNames(event.target.value);
+  function onChangeNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    updateCalendarInfo({ ...calendarInfo, names: event.target.value });
   }
 
   const onChangeRotationFrequency = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setCalendarInfo({
+    updateCalendarInfo({
       ...calendarInfo,
-      rotationFrequency: event.target.value
-    })
-    updateCalendarInfo({...calendarInfo, rotationFrequency: event.target.value});
+      rotationFrequency: event.target.value,
+    });
   };
 
   const onChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setDescription(event.target.value);
-    storeDescription(event.target.value);
+    updateCalendarInfo({ ...calendarInfo, description: event.target.value });
   };
 
   const onChangeUntilDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUntilDate(event.target.value);
-    storeUntilDate(event.target.value);
+    updateCalendarInfo({ ...calendarInfo, untilDate: event.target.value });
   };
 
   const isValidRotationFrequency = (value: string): boolean => {
@@ -157,8 +93,8 @@ export default function() {
               Participants
             </label>
             <textarea
-              value={names}
-              onChange={updateNames}
+              value={calendarInfo.names}
+              onChange={onChangeNames}
               className={
                 "h-40 appearance-none block w-full text-gray-700 rounded border-2 border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               }
@@ -198,7 +134,7 @@ export default function() {
               Description
             </label>
             <textarea
-              value={description}
+              value={calendarInfo.description}
               onChange={onChangeDescription}
               className={
                 "h-40 appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -216,7 +152,7 @@ export default function() {
             </label>
             <input
               onChange={onChangeUntilDate}
-              value={untilDate}
+              value={calendarInfo.untilDate}
               className={
                 "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               }
@@ -234,10 +170,12 @@ export default function() {
         </div>
       </form>
       <PairingApp
-        names={names.trim().split("\n")}
+        names={calendarInfo.names.trim().split("\n")}
         rotationFrequency={parseIntOrDefault(calendarInfo.rotationFrequency)}
-        description={description}
-        untilDate={untilDate ? new Date(untilDate) : undefined}
+        description={calendarInfo.description}
+        untilDate={
+          calendarInfo.untilDate ? new Date(calendarInfo.untilDate) : undefined
+        }
       />
       <div className="mt-2">
         Made with{" "}
@@ -256,4 +194,4 @@ export default function() {
       </div>
     </div>
   );
-};
+}
