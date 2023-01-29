@@ -81,6 +81,45 @@ export const setCalendarInfo = functions.https.onRequest(async (request: Request
   });
 });
 
+export const pairingPairs = functions.https.onRequest(async (request: Request, response: Response) => {
+  if (request.method !== "GET") {
+    response.status(403).send("Forbidden!");
+    return;
+  }
+
+  const apiKey = request.headers["x-api-key"];
+
+  if (!apiKey) {
+    response.status(403).send("Forbidden!");
+    return;
+  }
+
+  cors(request, response, async () => {
+    const perChunk = 2;
+    const doc = await admin.firestore().collection("extreme-programming").doc(apiKey).get();
+    const pairs = doc.data().pairs.reduce((resultArray : Record<string, String[]>, item : string, index : number) => {
+      const chunkIndex = `Room ${Math.floor(index/perChunk)}`;
+
+      if(!resultArray[chunkIndex]) {
+        resultArray[chunkIndex] = [] // start a new chunk
+      }
+    
+      resultArray[chunkIndex].push(item)
+    
+      return resultArray
+    }, {});
+
+
+    if (!doc.exists) {
+      console.log("No such document!");
+
+      response.sendStatus(404);
+    } else {
+      response.json(pairs);
+    }
+  });
+});
+
 // Listens for new messages added to /messages/:documentId/original and creates an
 // uppercase version of the message to /messages/:documentId/uppercase
 // exports.makeUppercase = functions.firestore.document("/extreme-programming/{documentId}")
