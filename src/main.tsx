@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import ErrorPage from './pages/NotFound'
-import About from './pages/About'
+import Pairs from './pages/Pairs'
 import Calendar from './pages/Calendar'
 
 import {
@@ -22,8 +22,8 @@ const router = createBrowserRouter([
         element: <Calendar />,
       },
       {
-        path: "about",
-        element: <About />,
+        path: "pairs",
+        element: <Pairs />,
       },
     ],
   },

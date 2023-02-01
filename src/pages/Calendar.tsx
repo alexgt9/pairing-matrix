@@ -11,7 +11,7 @@ const DEFAULT_ROTATION_FREQUENCY = 1;
 
 export default function () {
   const [calendarInfo, setCalendarInfo] = useState<CalendarInfo>({
-    names: "",
+    names: ["Paco", "Alejandro", "Elna", "Laura"].join("\n"),
     description: "",
     untilDate: "",
     rotationFrequency: DEFAULT_ROTATION_FREQUENCY.toString(),

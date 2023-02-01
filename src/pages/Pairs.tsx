@@ -1,6 +1,6 @@
 
 export default () => {
   return (
-    <div>Hola</div>
+    <div>Hola pairs</div>
   );
 };
