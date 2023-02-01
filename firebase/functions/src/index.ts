@@ -66,7 +66,7 @@ export const setCalendarInfo = functions.https.onRequest(async (request: Request
   cors(request, response, async () => {
     const data = {  
       description: request.body.description ?? "",
-      pairs: request.body.pairs ?? ["Alejandro", "Javi", "Laura", "Elna"],
+      names: request.body.names ?? ["Alejandro", "Javi", "Laura", "Elna"],
       rotation_frequency: request.body["rotation_frequency"] ?? 1,
       until_date: request.body["until_date"] ?? null,
       last_modification: new Date(),
@@ -97,7 +97,7 @@ export const pairingPairs = functions.https.onRequest(async (request: Request, r
   cors(request, response, async () => {
     const perChunk = 2;
     const doc = await admin.firestore().collection("extreme-programming").doc(apiKey).get();
-    const pairs = doc.data().pairs.reduce((resultArray : Record<string, String[]>, item : string, index : number) => {
+    const pairs = doc.data().names.reduce((resultArray : Record<string, String[]>, item : string, index : number) => {
       const chunkIndex = `Room ${Math.floor(index/perChunk)}`;
 
       if(!resultArray[chunkIndex]) {
@@ -119,21 +119,3 @@ export const pairingPairs = functions.https.onRequest(async (request: Request, r
     }
   });
 });
-
-// Listens for new messages added to /messages/:documentId/original and creates an
-// uppercase version of the message to /messages/:documentId/uppercase
-// exports.makeUppercase = functions.firestore.document("/extreme-programming/{documentId}")
-//     .onCreate((snap: any, context: any) => {
-//       // Grab the current value of what was written to Firestore.
-//       const description = snap.data().description;
-
-//       // Access the parameter `{documentId}` with `context.params`
-//       functions.logger.log("Uppercasing", context.params.documentId, description);
-
-//       const uppercase = description.toUpperCase();
-
-//       // You must return a Promise when performing asynchronous tasks inside a Functions such as
-//       // writing to Firestore.
-//       // Setting an 'uppercase' field in Firestore document returns a Promise.
-//       return snap.ref.set({uppercase}, {merge: true});
-//     });

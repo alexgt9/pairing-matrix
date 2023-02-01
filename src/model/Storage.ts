@@ -1,6 +1,6 @@
 export type CalendarInfo = {
     description: string;
-    names: string;
+    names: string[];
     untilDate: string;
     rotationFrequency: string;
   };
@@ -11,7 +11,7 @@ export type CalendarInfoResponse = {
         _second: number,
         _nanoseconds: number,
     },
-    pairs: string[],
+    names: string[],
     rotation_frequency: number,
     until_date: string, 
 }
@@ -28,7 +28,7 @@ export const storeCalendarInfo = (apiKey: string, data : CalendarInfo) => {
       },
       body: JSON.stringify({
         description: data.description,
-        pairs: data.names.split("\n"),
+        names: data.names,
         rotation_frequency: Number.parseInt(data.rotationFrequency),
         untilDate: data.untilDate,
       })
@@ -51,7 +51,7 @@ export const fetchCalendarInfo = async (apiKey : string) : Promise<CalendarInfo>
     })
       .then(response => {
         return Promise.resolve({
-                names: response.pairs.join("\n"),
+                names: response.names,
                 description: response.description,
                 rotationFrequency: response.rotation_frequency.toString(),
                 untilDate: response.until_date ?? "",

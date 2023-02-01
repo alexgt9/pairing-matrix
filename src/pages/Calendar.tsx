@@ -11,20 +11,25 @@ const DEFAULT_ROTATION_FREQUENCY = 1;
 
 export default function () {
   const [calendarInfo, setCalendarInfo] = useState<CalendarInfo>({
-    names: ["Paco", "Alejandro", "Elna", "Laura"].join("\n"),
+    names: ["Paco", "Alejandro", "Elna", "Laura"],
     description: "",
     untilDate: "",
     rotationFrequency: DEFAULT_ROTATION_FREQUENCY.toString(),
   });
+
+  const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"))
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
-  const [apiKey] = useState<string>("9999");
+  const [apiKey] = useState<string>("99999");
 
   const dateIsInThePast =
     calendarInfo.untilDate && new Date(calendarInfo.untilDate) < new Date();
 
   useEffect(() => {
     fetchCalendarInfo(apiKey)
-      .then((result: CalendarInfo) => setCalendarInfo(result))
+      .then((result: CalendarInfo) => {
+        setNamesString(result.names.join("\n"));
+        return setCalendarInfo(result)
+      })
       .catch((error) => console.log("error", error));
   }, []);
 
@@ -35,7 +40,8 @@ export default function () {
   };
 
   function onChangeNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    updateCalendarInfo({ ...calendarInfo, names: event.target.value });
+    setNamesString(event.target.value);
+    updateCalendarInfo({ ...calendarInfo, names: event.target.value.trim().split("\n") });
   }
 
   const onChangeRotationFrequency = (
@@ -93,7 +99,7 @@ export default function () {
               Participants
             </label>
             <textarea
-              value={calendarInfo.names}
+              value={namesString}
               onChange={onChangeNames}
               className={
                 "h-40 appearance-none block w-full text-gray-700 rounded border-2 border-gray-200 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
@@ -170,7 +176,7 @@ export default function () {
         </div>
       </form>
       <PairingApp
-        names={calendarInfo.names.trim().split("\n")}
+        names={calendarInfo.names}
         rotationFrequency={parseIntOrDefault(calendarInfo.rotationFrequency)}
         description={calendarInfo.description}
         untilDate={
