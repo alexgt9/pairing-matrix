@@ -44,7 +44,10 @@ export default () => {
   const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
   const rooms = splitIntoChunks(names, 2);
-  const [realRooms, setRealRooms] = useState<Room[]>([{ id: "Room 1", name: "Room 1"}]);
+  const [realRooms, setRealRooms] = useState<Room[]>([
+    { id: "Room 1", name: "Room 1"},
+    { id: "Room 2", name: "Room 2"},
+  ]);
 
   const participantsWithoutRoom = names.filter(name => {
     return assignations.find(assignation => assignation.name === name) === undefined;
@@ -82,7 +85,7 @@ export default () => {
   };
 
   const onFinishDraging = (room: string) => {
-    const newAssignations = [...assignations, { name: movingPerson, roomId: room } as Assignation];
+    const newAssignations = [...assignations.filter(assingation => assingation.name !== movingPerson), { name: movingPerson, roomId: room } as Assignation];
     setAssignations(newAssignations);
   };
 
@@ -146,13 +149,14 @@ export default () => {
         <header className="text-lg font-extrabold self-start">Rooms</header>
         <section className="flex">
           <section 
-            className="m-4" 
+            className="m-4 border-2 p-2" 
             onDragOver={onDragOverRoom}
             onDragEnter={onDragOverRoom}
             onDragLeave={onDragLeaveRoom}
             onDrop={onDrop}
             data-room={TO_ASSIGN_ROOM}
             >
+              <h2>Drag to assign a room</h2>
             {participantsWithoutRoom.map((item) => (
                 <div
                   className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
@@ -169,18 +173,8 @@ export default () => {
               <PairingRoom
                 key={room.id}
                 roomName={room.name}
-                names={participantsForRoom(room.id)}
+                names={room.participants}
                 link={room.link}
-                startDraging={onStartDraging}
-                finishDraging={onFinishDraging}
-              />
-            ))}
-            {rooms.map((roomNames, key) => (
-              <PairingRoom
-                key={key}
-                roomName={`Room ${key + 1}`}
-                names={roomNames}
-                link={`http://zoom.com/room${key + 1}`}
                 startDraging={onStartDraging}
                 finishDraging={onFinishDraging}
               />
