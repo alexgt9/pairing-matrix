@@ -1,35 +1,25 @@
 import React, { KeyboardEvent, useEffect, useState } from "react";
 import PairingRoom from "../components/PairingRoom";
 
-const splitIntoChunks = (names: string[], chunkSize: number): string[][] => {
-  const result = [];
-  for (let i = 0; i < names.length; i += chunkSize) {
-    const chunk = names.slice(i, i + chunkSize);
-    result.push(chunk);
-  }
-
-  return result;
-};
-
 type Room = {
   id: string;
   name: string;
   link?: string;
-}
+};
 
 type RoomWithParticipants = {
   id: string;
   name: string;
   link?: string;
   participants: string[];
-}
+};
 
 type Assignation = {
   name: string;
-  roomId: string|undefined;
-}
+  roomId: string | undefined;
+};
 
-const TO_ASSIGN_ROOM = 'toAssign';
+const TO_ASSIGN_ROOM = "toAssign";
 
 export default () => {
   const [newName, setNewName] = useState<string>("");
@@ -38,27 +28,41 @@ export default () => {
     "Alejandro",
     "Elna",
     "Laura",
+    "Paco2",
+    "Al2ejandro",
+    "El2na",
+    "La2ura",
   ]);
-  const [assignations, setAssignations] = useState<Assignation[]>([{ name: "Paco", roomId: "Room 1" }]);
+  const [assignations, setAssignations] = useState<Assignation[]>([
+    { name: "Paco", roomId: "Room 1" },
+  ]);
   const [error, setError] = useState<boolean>(false);
   const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
-  const rooms = splitIntoChunks(names, 2);
   const [realRooms, setRealRooms] = useState<Room[]>([
-    { id: "Room 1", name: "Room 1"},
-    { id: "Room 2", name: "Room 2"},
+    { id: "Room 1", name: "Room 1" },
+    { id: "Room 2", name: "Room 2" },
   ]);
 
-  const participantsWithoutRoom = names.filter(name => {
-    return assignations.find(assignation => assignation.name === name) === undefined;
+  const participantsWithoutRoom = names.filter((name) => {
+    return (
+      assignations.find((assignation) => assignation.name === name) ===
+      undefined
+    );
   });
 
   const participantsForRoom = (roomId: string) => {
-    return assignations.filter(assignation => assignation.roomId == roomId).map(assignation => assignation.name);
-  }
+    return assignations
+      .filter((assignation) => assignation.roomId == roomId)
+      .map((assignation) => assignation.name);
+  };
 
-  const roomsWithParticipants = realRooms.map(room => { 
-    return { id: room.id, name: room.name, participants: participantsForRoom(room.id)} as RoomWithParticipants;
+  const roomsWithParticipants = realRooms.map((room) => {
+    return {
+      id: room.id,
+      name: room.name,
+      participants: participantsForRoom(room.id),
+    } as RoomWithParticipants;
   });
 
   const onNewNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,29 +84,33 @@ export default () => {
     }
   };
 
-  const onStartDraging = (name: string) => {
-    setMovingPerson(name);
-  };
-
-  const onFinishDraging = (room: string) => {
-    const newAssignations = [...assignations.filter(assingation => assingation.name !== movingPerson), { name: movingPerson, roomId: room } as Assignation];
+  const unAssign = () => {
+    const newAssignations = assignations.filter((assignation) => assignation.name !== movingPerson);
     setAssignations(newAssignations);
   };
 
+  const assignToRoom = (room: string) => {
+    const newAssignations = [
+      ...assignations.filter(
+        (assingation) => assingation.name !== movingPerson
+      ),
+      { name: movingPerson, roomId: room } as Assignation,
+    ];
+    setAssignations(newAssignations);
+  };
 
   const [dragOver, setDragOver] = useState<boolean>(false);
   const activeClass = dragOver ? "border-yellow-400" : "";
 
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
-    onStartDraging(event.currentTarget.innerText);
+    setMovingPerson(event.currentTarget.innerText);
   };
 
   const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragOver(false);
 
-    const room = event.currentTarget.dataset.room;
-    room && onFinishDraging(room);
+    unAssign();
   };
 
   const onDragOverRoom = (event: React.DragEvent<HTMLDivElement>) => {
@@ -116,57 +124,42 @@ export default () => {
 
   return (
     <>
-      <section className="flex flex-col m-4">
-        <header className="text-lg font-extrabold self-start">
-          Participants
-        </header>
-        <div className="flex border-2 w-max mt-4">
-          {names.map((item) => (
-            <div
-              className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
-              key={item}
-            >
-              {item}
-            </div>
-          ))}
-          <input
-            onKeyDown={onKeydownNewName}
-            className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
-            type="text"
-            placeholder="Add participant"
-            value={newName}
-            onChange={onNewNameChange}
-          />
-        </div>
-        {error && (
-          <div className="self-start text-red-400 font-semibold">
-            This name <span className="font-bold text-red-700">{newName}</span>{" "}
-            is already in the list
-          </div>
-        )}
-      </section>
-      <section className="ml-4">
+      <section className="ml-4 mt-4">
         <header className="text-lg font-extrabold self-start">Rooms</header>
         <section className="flex">
-          <section 
-            className="m-4 border-2 p-2" 
+          <section
+            className="m-4 border-2 p-2"
             onDragOver={onDragOverRoom}
             onDragEnter={onDragOverRoom}
             onDragLeave={onDragLeaveRoom}
             onDrop={onDrop}
             data-room={TO_ASSIGN_ROOM}
-            >
-              <h2>Drag to assign a room</h2>
+          >
+            <h2>Drag to assign a room</h2>
+            <input
+              onKeyDown={onKeydownNewName}
+              className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
+              type="text"
+              placeholder="Add participant"
+              value={newName}
+              onChange={onNewNameChange}
+            />
+            {error && (
+              <div className="self-start text-red-400 font-semibold">
+                <span className="font-bold text-red-700">{newName}</span>{" "}
+                is already in the list
+              </div>
+            )}
             {participantsWithoutRoom.map((item) => (
-                <div
-                  className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
-                  key={item}
-                  onDragStart={onDragStartName}
-                  draggable
-                >
-                  {item}
-                </div>
-              ))}
+              <div
+                className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
+                key={item}
+                onDragStart={onDragStartName}
+                draggable
+              >
+                {item}
+              </div>
+            ))}
           </section>
           <section>
             {roomsWithParticipants.map((room) => (
@@ -175,8 +168,8 @@ export default () => {
                 roomName={room.name}
                 names={room.participants}
                 link={room.link}
-                startDraging={onStartDraging}
-                finishDraging={onFinishDraging}
+                startDraging={setMovingPerson}
+                finishDraging={assignToRoom}
               />
             ))}
           </section>
