@@ -53,7 +53,7 @@ export default ({
         return (
           <div
             key={name}
-            className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
+            className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
             onDragStart={onDragStartName}
             draggable
           >
