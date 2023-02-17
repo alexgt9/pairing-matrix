@@ -7,11 +7,11 @@ import Pairs from './pages/Pairs'
 import Calendar from './pages/Calendar'
 
 import {
-  createHashRouter,
+  createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
