@@ -1,5 +1,8 @@
 name: Firebase function deploy
-on: [push]
+on: 
+  push:
+    paths:
+      - 'firebase/**'
 jobs:
   build:
     runs-on: ubuntu-latest
