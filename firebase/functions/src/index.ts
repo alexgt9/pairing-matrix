@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
 const functions = require("firebase-functions");
-import { initializeApp } from 'firebase-admin/app';
+import { initializeApp } from "firebase-admin/app";
 
-const { getFirestore } = require('firebase-admin/firestore');
+const { getFirestore } = require("firebase-admin/firestore");
 
 initializeApp();
 
