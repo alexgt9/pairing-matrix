@@ -1,10 +1,16 @@
 #!/usr/bin/env /Users/alejandrobatanero/.nvm/versions/node/v18.12.1/bin/node
 
 const API_KEY = "";
-const YOUR_NAME = "";
+const YOUR_NAME = "Alejandro";
 
 const https = require('https');
 const { exit } = require('process');
+
+// console.log("Room 1 : Aleh & Juan");
+// console.log("---");
+// console.log(`Room 1 : Aleh & Jose | href=https://thoughtworks.zoom.us/j/98729122068?pwd=M2VNQ1dwR20vTEFKTndIRWJ1ZmVsQT09`);
+// console.log(`Room 2 : Anca & Lavinia | href=https://thoughtworks.zoom.us/j/98729122068?pwd=M2VNQ1dwR20vTEFKTndIRWJ1ZmVsQT09`);
+// exit;
 
 if (!API_KEY || !YOUR_NAME) {
   console.log("You must set the API_KEY and YOUR_NAME!");
@@ -33,7 +39,7 @@ const req = https.request(options, function (res) {
 
     for (const [key, value] of Object.entries(body)) {
         if (value.includes(YOUR_NAME)) {
-            console.log(key);
+            console.log(`${key} : ${value.toString()}`);
             found = true;
         }
     }
@@ -45,7 +51,7 @@ const req = https.request(options, function (res) {
     console.log("---");
 
     for (const [key, value] of Object.entries(body)) {
-        console.log(`${key} : ${value.toString()}`);
+        console.log(`${key} : ${value.toString()} | href=https://thoughtworks.zoom.us/j/roomId`);
     }
   });
 
