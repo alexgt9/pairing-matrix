@@ -39,7 +39,7 @@ const req = https.request(options, function (res) {
 
     for (const [key, value] of Object.entries(body)) {
         if (value.includes(YOUR_NAME)) {
-            console.log(`${key} : ${value.toString()}`);
+            console.log(key);
             found = true;
         }
     }
