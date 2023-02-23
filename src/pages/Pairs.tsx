@@ -1,16 +1,12 @@
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import React, { useState } from "react";
 import PairingRoom from "../components/PairingRoom";
 
 type Room = {
   id: string;
-  name: string;
   link?: string;
 };
 
-type RoomWithParticipants = {
-  id: string;
-  name: string;
-  link?: string;
+type RoomWithParticipants = Room & {
   participants: string[];
 };
 
@@ -23,6 +19,7 @@ const TO_ASSIGN_ROOM = "toAssign";
 
 export default () => {
   const [newName, setNewName] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
   const [names, setNames] = useState<string[]>([
     "Paco",
     "Alejandro",
@@ -36,12 +33,13 @@ export default () => {
   const [assignations, setAssignations] = useState<Assignation[]>([
     { name: "Paco", roomId: "Room 1" },
   ]);
-  const [error, setError] = useState<boolean>(false);
   const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
-  const [realRooms, setRealRooms] = useState<Room[]>([
-    { id: "Room 1", name: "Room 1" },
-    { id: "Room 2", name: "Room 2" },
+  const [newRoom, setNewRoom] = useState<string>("");
+  const [errorRoom, setErrorRoom] = useState<boolean>(false);
+  const [rooms, setRooms] = useState<Room[]>([
+    { id: "Room 1", link: "google.com" },
+    { id: "Room 2" },
   ]);
 
   const participantsWithoutRoom = names.filter((name) => {
@@ -57,10 +55,9 @@ export default () => {
       .map((assignation) => assignation.name);
   };
 
-  const roomsWithParticipants = realRooms.map((room) => {
+  const roomsWithParticipants = rooms.map((room) => {
     return {
-      id: room.id,
-      name: room.name,
+      ...room,
       participants: participantsForRoom(room.id),
     } as RoomWithParticipants;
   });
@@ -70,7 +67,7 @@ export default () => {
     setError(false);
   };
 
-  const onKeydownNewName = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeydownNewName = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newName) {
       if (names.includes(newName)) {
         setError(true);
@@ -84,8 +81,29 @@ export default () => {
     }
   };
 
+  const onNewRoomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewRoom(event.currentTarget.value);
+    setErrorRoom(false);
+  };
+
+  const onKeydownNewRoom = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && newRoom) {
+      if (rooms.some(room => room.id ===  newRoom )) {
+        setErrorRoom(true);
+
+        return;
+      }
+
+      setRooms((oldRoom) => [...oldRoom, { id: newRoom }]);
+      setNewRoom("");
+      setErrorRoom(false);
+    }
+  };
+
   const unAssign = () => {
-    const newAssignations = assignations.filter((assignation) => assignation.name !== movingPerson);
+    const newAssignations = assignations.filter(
+      (assignation) => assignation.name !== movingPerson
+    );
     setAssignations(newAssignations);
   };
 
@@ -146,8 +164,8 @@ export default () => {
             />
             {error && (
               <div className="self-start text-red-400 font-semibold">
-                <span className="font-bold text-red-700">{newName}</span>{" "}
-                is already in the list
+                <span className="font-bold text-red-700">{newName}</span> is
+                already in the list
               </div>
             )}
             {participantsWithoutRoom.map((item) => (
@@ -162,16 +180,35 @@ export default () => {
             ))}
           </section>
           <section>
-            {roomsWithParticipants.map((room) => (
-              <PairingRoom
-                key={room.id}
-                roomName={room.name}
-                names={room.participants}
-                link={room.link}
-                startDraging={setMovingPerson}
-                finishDraging={assignToRoom}
-              />
-            ))}
+            <section>
+              {roomsWithParticipants.map((room) => (
+                <PairingRoom
+                  key={room.id}
+                  roomName={room.id}
+                  names={room.participants}
+                  link={room.link}
+                  startDraging={setMovingPerson}
+                  finishDraging={assignToRoom}
+                />
+              ))}
+            </section>
+            <section>
+              <div className={`flex border-2 w-max m-4`}>
+                <input
+                  type={"text"}
+                  className="self-center font-extrabold p-4"
+                  placeholder="Create new room"
+                  onKeyDown={onKeydownNewRoom}
+                  onChange={onNewRoomChange}
+                  value={newRoom}
+                />
+              </div>
+              {errorRoom && (
+                <div className="self-start text-red-400 font-semibold">
+                  <span className="font-bold text-red-700">{newRoom}</span> already exists
+                </div>
+              )}
+            </section>
           </section>
         </section>
       </section>
