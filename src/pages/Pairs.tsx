@@ -86,7 +86,7 @@ export default () => {
     setErrorRoom(false);
   };
 
-  const onKeydownNewRoom = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeydownNewRoom = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newRoom) {
       if (rooms.some(room => room.id ===  newRoom )) {
         setErrorRoom(true);
@@ -189,6 +189,7 @@ export default () => {
                   link={room.link}
                   startDraging={setMovingPerson}
                   finishDraging={assignToRoom}
+                  onLinkChange={() => {}}
                 />
               ))}
             </section>
