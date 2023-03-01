@@ -13,14 +13,14 @@ export type CalendarInfo = {
   description: string;
   names: string[];
   untilDate: string;
-  rotationFrequency: string;
+  rotation_frequency: string;
   assignations: Assignation[];
   rooms: Room[];
 };
 
 const baseUrl = import.meta.env.VITE_API_HOST;
 
-export const storeCalendarInfo = (apiKey: string, data : CalendarInfo) => {
+export const storeCalendarInfo = (apiKey: string, data : Partial<CalendarInfo>) => {
     fetch(`${baseUrl}/setCalendarInfo`, {
       method: "POST",
       headers: {
@@ -28,12 +28,6 @@ export const storeCalendarInfo = (apiKey: string, data : CalendarInfo) => {
         "origin": window.location.hostname,
         "content-type": "application/json",
       },
-      // body: JSON.stringify({
-      //   description: data.description,
-      //   names: data.names,
-      //   rotation_frequency: Number.parseInt(data.rotationFrequency),
-      //   untilDate: data.untilDate,
-      // })
       body: JSON.stringify(data)
     }).then((response) => response.text())
       .then((result) => console.log(result))
@@ -54,9 +48,9 @@ export const fetchCalendarInfo = async (apiKey : string) : Promise<CalendarInfo>
     })
       .then(response => {
         return Promise.resolve({
-                names: response.names,
+                names: response.names ?? ["Paco", "Aleh"],
                 description: response.description,
-                rotationFrequency: response.rotation_frequency?.toString(),
+                rotation_frequency: response.rotation_frequency ? response.rotation_frequency?.toString() : "1",
                 untilDate: response.until_date ?? "",
                 assignations: response.assignations ?? [],
                 rooms: response.rooms ?? [],

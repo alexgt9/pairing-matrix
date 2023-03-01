@@ -14,10 +14,10 @@ export default function () {
     names: ["Paco", "Alejandro", "Elna", "Laura"],
     description: "",
     untilDate: "",
-    rotationFrequency: DEFAULT_ROTATION_FREQUENCY.toString(),
+    rotation_frequency: DEFAULT_ROTATION_FREQUENCY.toString(),
   });
 
-  const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"));
+  const [namesString, setNamesString] = useState<string>("");
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
   const [apiKey] = useState<string>("99999");
 
@@ -33,7 +33,7 @@ export default function () {
       .catch((error) => console.log("error", error));
   }, []);
 
-  const updateCalendarInfo = (data: CalendarInfo) => {
+  const updateCalendarInfo = (data: Partial<CalendarInfo>) => {
     setCalendarInfo(data);
     timeoutId && clearTimeout(timeoutId);
     setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
@@ -49,7 +49,7 @@ export default function () {
   ) => {
     updateCalendarInfo({
       ...calendarInfo,
-      rotationFrequency: event.target.value,
+      rotation_frequency: event.target.value,
     });
   };
 
@@ -63,8 +63,8 @@ export default function () {
     updateCalendarInfo({ ...calendarInfo, untilDate: event.target.value });
   };
 
-  const isValidRotationFrequency = (value: string): boolean => {
-    const almostNumber = parseInt(value);
+  const isValidRotationFrequency = (value: string | undefined): boolean => {
+    const almostNumber = value && parseInt(value);
 
     return !!almostNumber && almostNumber > 0;
   };
@@ -116,7 +116,7 @@ export default function () {
               Rotation frequency (in days)
             </label>
             <input
-              value={calendarInfo.rotationFrequency}
+              value={calendarInfo.rotation_frequency}
               onChange={onChangeRotationFrequency}
               className={
                 "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -124,7 +124,7 @@ export default function () {
               id="rotation-frequency"
               type="text"
             />
-            {!isValidRotationFrequency(calendarInfo.rotationFrequency) && (
+            {!isValidRotationFrequency(calendarInfo.rotation_frequency) && (
               <p className={"text-red-600 text-xs italic mt-2"}>
                 Wrong value! Using default (1).
               </p>
@@ -177,7 +177,7 @@ export default function () {
       </form>
       <PairingApp
         names={calendarInfo.names}
-        rotationFrequency={parseIntOrDefault(calendarInfo.rotationFrequency)}
+        rotationFrequency={parseIntOrDefault(calendarInfo.rotation_frequency)}
         description={calendarInfo.description}
         untilDate={
           calendarInfo.untilDate ? new Date(calendarInfo.untilDate) : undefined

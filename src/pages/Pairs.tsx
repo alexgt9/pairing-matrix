@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PairingRoom from "../components/PairingRoom";
-import { v4 as uuidv4 } from 'uuid';
 import { Assignation, CalendarInfo, fetchCalendarInfo, Room, storeCalendarInfo } from "../model/Storage";
 
 type RoomWithParticipants = Room & {
@@ -31,6 +30,7 @@ export default () => {
   useEffect(() => {
     fetchCalendarInfo(apiKey)
       .then((result: CalendarInfo) => {
+        setNames(result.names);
         setAssignations(result.assignations);
         setRooms(result.rooms);
       })
