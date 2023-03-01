@@ -1,20 +1,22 @@
-export type CalendarInfo = {
-    description: string;
-    names: string[];
-    untilDate: string;
-    rotationFrequency: string;
-  };
+export type Assignation = {
+  name: string;
+  roomId: number;
+};
 
-export type CalendarInfoResponse = {
-    description: string,
-    last_modification: {
-        _second: number,
-        _nanoseconds: number,
-    },
-    names: string[],
-    rotation_frequency: number,
-    until_date: string, 
-}
+export type Room = {
+  id: number;
+  name: string;
+  link?: string;
+};
+
+export type CalendarInfo = {
+  description: string;
+  names: string[];
+  untilDate: string;
+  rotationFrequency: string;
+  assignations: Assignation[];
+  rooms: Room[];
+};
 
 const baseUrl = import.meta.env.VITE_API_HOST;
 
@@ -26,12 +28,13 @@ export const storeCalendarInfo = (apiKey: string, data : CalendarInfo) => {
         "origin": window.location.hostname,
         "content-type": "application/json",
       },
-      body: JSON.stringify({
-        description: data.description,
-        names: data.names,
-        rotation_frequency: Number.parseInt(data.rotationFrequency),
-        untilDate: data.untilDate,
-      })
+      // body: JSON.stringify({
+      //   description: data.description,
+      //   names: data.names,
+      //   rotation_frequency: Number.parseInt(data.rotationFrequency),
+      //   untilDate: data.untilDate,
+      // })
+      body: JSON.stringify(data)
     }).then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
@@ -53,8 +56,10 @@ export const fetchCalendarInfo = async (apiKey : string) : Promise<CalendarInfo>
         return Promise.resolve({
                 names: response.names,
                 description: response.description,
-                rotationFrequency: response.rotation_frequency.toString(),
+                rotationFrequency: response.rotation_frequency?.toString(),
                 untilDate: response.until_date ?? "",
+                assignations: response.assignations ?? [],
+                rooms: response.rooms ?? [],
         });
       });
 }

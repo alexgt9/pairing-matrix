@@ -1,21 +1,25 @@
 import React, { useState } from "react";
 
 export type PairingRoomProps = {
+  id: number;
   roomName: string;
   names: string[];
   link?: string;
   startDraging: (name: string) => void;
-  finishDraging: (roomName: string) => void;
-  onLinkChange: (link: string) => void;
+  finishDraging: (roomName: number) => void;
+  nameChanged: (id: number, newName: string) => void;
+  linkChanged: (id: number, newLink: string) => void;
 };
 
 export default ({
+  id,
   roomName,
   names,
   link,
   startDraging,
   finishDraging,
-  onLinkChange
+  nameChanged,
+  linkChanged,
 }: PairingRoomProps) => {
   const [dragOver, setDragOver] = useState<boolean>(false);
   const activeClass = dragOver ? "border-yellow-400" : "";
@@ -28,8 +32,8 @@ export default ({
     event.preventDefault();
     setDragOver(false);
 
-    const room = event.currentTarget.dataset.room;
-    room && finishDraging(room);
+    const roomId = event.currentTarget.dataset.roomId;
+    roomId && finishDraging(parseInt(roomId));
   };
 
   const onDragOverRoom = (event: React.DragEvent<HTMLDivElement>) => {
@@ -41,6 +45,29 @@ export default ({
     setDragOver(false);
   };
 
+  const [newName, setNewName] = useState<string>(roomName);
+  const [editableName, setEditableName] = useState<boolean>(false);
+
+  const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewName(event.currentTarget.value);
+  };
+
+  const onNameClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setEditableName(true);
+  };
+
+  const onNameBlur = () => {
+    setEditableName(false);
+  };
+
+  const onKeydownName = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && newName) {
+      nameChanged(id, newName);
+      setEditableName(false);
+    }
+  };
+
   const [newLink, setNewLink] = useState<string>(link ?? "");
   const [editableLink, setEditableLink] = useState<boolean>(false);
 
@@ -48,17 +75,19 @@ export default ({
     setNewLink(event.currentTarget.value);
   };
 
-  const onLinkClick = () => {
+  const onLinkClick = (event: React.MouseEvent) => {
+    event.preventDefault();
     setEditableLink(true);
   };
 
   const onLinkBlur = () => {
     setEditableLink(false);
+    linkChanged(id, newLink);
   };
 
   const onKeydownLink = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newLink) {
-      onLinkChange(newLink);
+      linkChanged(id, newLink);
       setEditableLink(false);
     }
   };
@@ -70,45 +99,84 @@ export default ({
       onDragLeave={onDragLeaveRoom}
       onDragOver={onDragOverRoom}
       onDrop={onDrop}
-      data-room={roomName}
+      data-room-id={id}
     >
-      <div className="flex">
-        <span className="self-center font-extrabold mr-2">{roomName}</span>
-        {names.map((name) => {
-          return (
-            <div
-              key={name}
-              className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
-              onDragStart={onDragStartName}
-              draggable
-            >
-              {name}
-            </div>
-          );
-        })}
-      </div>
-      {!editableLink && link && (
-        <div className="self-start">
-          <a className="text-blue-400" href="google.com">
-            {link}
-          </a>
-          <span className="ml-2" onClick={onLinkClick}>
-            Edit
+      {!editableName && (
+        <div className="flex">
+          <span
+            onClick={onNameClick}
+            className="self-center font-extrabold mr-2"
+          >
+            {roomName}
           </span>
+          {names.map((name) => {
+            return (
+              <div
+                key={name}
+                className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
+                onDragStart={onDragStartName}
+                draggable
+              >
+                {name}
+              </div>
+            );
+          })}
         </div>
       )}
-      {(editableLink || !link) && (
+
+      {editableName && (
         <input
           type={"text"}
           className="self-center font-extrabold"
-          placeholder="Link to room"
-          onKeyDown={onKeydownLink}
-          onChange={onChangeLink}
-          value={newLink}
-          autoFocus={editableLink}
-          onBlur={onLinkBlur}
+          placeholder="Room name"
+          onKeyDown={onKeydownName}
+          onChange={onChangeName}
+          value={newName}
+          autoFocus={editableName}
+          onBlur={onNameBlur}
         />
       )}
+
+      <div className="flex self-start">
+        <b className="mr-2">Link:</b>{" "}
+        {!editableLink && link && (
+          <>
+            <span onClick={onLinkClick} className="text-blue-400">
+              {link}
+            </span>
+            <span className="ml-2">
+              <a href={link} target={"_blank"}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                  />
+                </svg>
+              </a>
+            </span>
+          </>
+        )}
+        {(editableLink || !link) && (
+          <input
+            type={"text"}
+            className="self-center"
+            placeholder="Click to add"
+            onKeyDown={onKeydownLink}
+            onChange={onChangeLink}
+            value={newLink}
+            autoFocus={editableLink}
+            onBlur={onLinkBlur}
+          />
+        )}
+      </div>
     </div>
   );
 };

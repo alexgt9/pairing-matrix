@@ -1,18 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PairingRoom from "../components/PairingRoom";
-
-type Room = {
-  id: string;
-  link?: string;
-};
+import { v4 as uuidv4 } from 'uuid';
+import { Assignation, CalendarInfo, fetchCalendarInfo, Room, storeCalendarInfo } from "../model/Storage";
 
 type RoomWithParticipants = Room & {
   participants: string[];
-};
-
-type Assignation = {
-  name: string;
-  roomId: string | undefined;
 };
 
 const TO_ASSIGN_ROOM = "toAssign";
@@ -23,24 +15,27 @@ export default () => {
   const [names, setNames] = useState<string[]>([
     "Paco",
     "Alejandro",
-    "Elna",
-    "Laura",
-    "Paco2",
-    "Al2ejandro",
-    "El2na",
-    "La2ura",
   ]);
   const [assignations, setAssignations] = useState<Assignation[]>([
-    { name: "Paco", roomId: "Room 1" },
+    { name: "Paco", roomId: 1 },
   ]);
   const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
   const [newRoom, setNewRoom] = useState<string>("");
   const [errorRoom, setErrorRoom] = useState<boolean>(false);
   const [rooms, setRooms] = useState<Room[]>([
-    { id: "Room 1", link: "google.com" },
-    { id: "Room 2" },
+    { id: 1, name: "Room 1" },
+    { id: 2, name: "Room 2" },
   ]);
+
+  useEffect(() => {
+    fetchCalendarInfo(apiKey)
+      .then((result: CalendarInfo) => {
+        setAssignations(result.assignations);
+        setRooms(result.rooms);
+      })
+      .catch((error) => console.log("error", error));
+  }, []);
 
   const participantsWithoutRoom = names.filter((name) => {
     return (
@@ -49,7 +44,7 @@ export default () => {
     );
   });
 
-  const participantsForRoom = (roomId: string) => {
+  const participantsForRoom = (roomId: number) => {
     return assignations
       .filter((assignation) => assignation.roomId == roomId)
       .map((assignation) => assignation.name);
@@ -75,7 +70,12 @@ export default () => {
         return;
       }
 
-      setNames((oldNames) => [...oldNames, newName]);
+      setNames((oldNames) => {
+        const newNames = [...oldNames, newName];
+        updateApiInfo({ names: newNames });
+
+        return newNames;
+      });
       setNewName("");
       setError(false);
     }
@@ -88,13 +88,18 @@ export default () => {
 
   const onKeydownNewRoom = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newRoom) {
-      if (rooms.some(room => room.id ===  newRoom )) {
+      if (rooms.some(room => room.name ===  newRoom )) {
         setErrorRoom(true);
 
         return;
       }
 
-      setRooms((oldRoom) => [...oldRoom, { id: newRoom }]);
+      setRooms((oldRooms) => {
+        const newRooms = [...oldRooms, { id: oldRooms.length + 1, name: newRoom }];
+        updateApiInfo({ rooms: newRooms });
+
+        return newRooms;
+      });
       setNewRoom("");
       setErrorRoom(false);
     }
@@ -105,20 +110,23 @@ export default () => {
       (assignation) => assignation.name !== movingPerson
     );
     setAssignations(newAssignations);
+
+    updateApiInfo({ assignations: newAssignations });
   };
 
-  const assignToRoom = (room: string) => {
+  const assignToRoom = (roomId: number) => {
     const newAssignations = [
       ...assignations.filter(
         (assingation) => assingation.name !== movingPerson
       ),
-      { name: movingPerson, roomId: room } as Assignation,
+      { name: movingPerson, roomId: roomId } as Assignation,
     ];
     setAssignations(newAssignations);
+
+    updateApiInfo({ assignations: newAssignations });
   };
 
   const [dragOver, setDragOver] = useState<boolean>(false);
-  const activeClass = dragOver ? "border-yellow-400" : "";
 
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
     setMovingPerson(event.currentTarget.innerText);
@@ -138,6 +146,40 @@ export default () => {
 
   const onDragLeaveRoom = (event: React.DragEvent<HTMLDivElement>) => {
     setDragOver(false);
+  };
+
+  const [apiKey] = useState<string>("99999");
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
+  
+  const updateApiInfo = (data: Partial<CalendarInfo>) => {
+    // setCalendarInfo(data);
+    timeoutId && clearTimeout(timeoutId);
+    setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
+  };
+
+  const onRoomNameChanged = (roomId: number, roomName: string) => {
+    setRooms(rooms => {
+      const oldRoom = rooms.find(room => room.id === roomId);
+      const newRooms = [...rooms.filter(room => room.id !== roomId), { id: oldRoom?.id, name: roomName, link: oldRoom?.link } as Room]
+        .sort((a, b) => a.id - b.id);
+
+      updateApiInfo({ rooms: newRooms });
+
+      return newRooms;
+    })
+  };
+
+  const onRoomLinkChanged = (roomId: number, link: string) => {
+    setRooms(rooms => {
+      const oldRoom = rooms.find(room => room.id === roomId);
+      const newRooms = [...rooms.filter(room => room.id !== roomId), { id: oldRoom?.id, name: oldRoom?.name, link: link } as Room]
+        .sort((a, b) => a.id - b.id);
+      
+      updateApiInfo({ rooms: newRooms });
+
+      return newRooms;
+    })
+
   };
 
   return (
@@ -184,12 +226,14 @@ export default () => {
               {roomsWithParticipants.map((room) => (
                 <PairingRoom
                   key={room.id}
-                  roomName={room.id}
+                  id={room.id}
+                  roomName={room.name}
                   names={room.participants}
                   link={room.link}
                   startDraging={setMovingPerson}
                   finishDraging={assignToRoom}
-                  onLinkChange={() => {}}
+                  nameChanged={onRoomNameChanged}
+                  linkChanged={onRoomLinkChanged}
                 />
               ))}
             </section>
@@ -197,8 +241,8 @@ export default () => {
               <div className={`flex border-2 w-max m-4`}>
                 <input
                   type={"text"}
-                  className="self-center font-extrabold p-4"
-                  placeholder="Create new room"
+                  className="self-center p-4"
+                  placeholder="Click to add new room"
                   onKeyDown={onKeydownNewRoom}
                   onChange={onNewRoomChange}
                   value={newRoom}

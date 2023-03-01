@@ -10,14 +10,14 @@ import {
 const DEFAULT_ROTATION_FREQUENCY = 1;
 
 export default function () {
-  const [calendarInfo, setCalendarInfo] = useState<CalendarInfo>({
+  const [calendarInfo, setCalendarInfo] = useState<Partial<CalendarInfo>>({
     names: ["Paco", "Alejandro", "Elna", "Laura"],
     description: "",
     untilDate: "",
     rotationFrequency: DEFAULT_ROTATION_FREQUENCY.toString(),
   });
 
-  const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"))
+  const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"));
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
   const [apiKey] = useState<string>("99999");
 
