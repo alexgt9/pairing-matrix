@@ -11,12 +11,9 @@ const App = () => {
 
   return (
     <ApiKeyContext.Provider value={apiKey}>
-      <div className="flex">
-        <NavBar/>
-        <div className="w-full flex flex-col">
-          <header className="self-end p-4">
-            <ApiKey onApiKeyChange={setApiKey}/>
-          </header>
+      <div className="flex flex-col h-screen">
+        <NavBar onApiKeyChange={setApiKey}/>
+        <div className="flex-1 overflow-y-auto p-5">
           <section id="detail" className="w-full">
             <Outlet />
           </section>
