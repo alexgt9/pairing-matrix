@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ApiKeyContext } from "../App";
 import PairingRoom from "../components/PairingRoom";
-import { Assignation, CalendarInfo, fetchCalendarInfo, Room, storeCalendarInfo } from "../model/Storage";
+import {
+  Assignation,
+  fetchCalendarInfo,
+  Room,
+  RoomsInfo,
+  storeCalendarInfo,
+} from "../model/Storage";
 
 type RoomWithParticipants = Room & {
   participants: string[];
@@ -9,48 +16,59 @@ type RoomWithParticipants = Room & {
 const TO_ASSIGN_ROOM = "toAssign";
 
 export default () => {
+  const [roomsInfo, setRoomsInfo] = useState<RoomsInfo>({
+    names: ["Paco", "Alejandro"],
+    assignations: [{ name: "Paco", roomId: 1 }],
+    rooms: [
+      { id: 1, name: "Room 1" },
+      { id: 2, name: "Room 2" },
+    ],
+  });
+
   const [newName, setNewName] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
-  const [names, setNames] = useState<string[]>([
-    "Paco",
-    "Alejandro",
-  ]);
-  const [assignations, setAssignations] = useState<Assignation[]>([
-    { name: "Paco", roomId: 1 },
-  ]);
   const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
   const [newRoom, setNewRoom] = useState<string>("");
   const [errorRoom, setErrorRoom] = useState<boolean>(false);
-  const [rooms, setRooms] = useState<Room[]>([
-    { id: 1, name: "Room 1" },
-    { id: 2, name: "Room 2" },
-  ]);
+
+  const apiKey = useContext(ApiKeyContext);
+
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
+
+  const updateRoomsInfo = (data: Partial<RoomsInfo>) => {
+    const fullData = { ...roomsInfo, ...data };
+    setRoomsInfo(fullData);
+
+    if (apiKey) {
+      timeoutId && clearTimeout(timeoutId);
+      setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, fullData), 3000));
+    }
+  };
 
   useEffect(() => {
-    fetchCalendarInfo(apiKey)
-      .then((result: CalendarInfo) => {
-        setNames(result.names);
-        setAssignations(result.assignations);
-        setRooms(result.rooms);
-      })
-      .catch((error) => console.log("error", error));
-  }, []);
+    if (apiKey) {
+      fetchCalendarInfo(apiKey)
+        .then(setRoomsInfo)
+        .catch((error) => console.log("error", error));
+    }``
+  }, [apiKey]);
 
-  const participantsWithoutRoom = names.filter((name) => {
+  const participantsWithoutRoom = roomsInfo.names.filter((name) => {
     return (
-      assignations.find((assignation) => assignation.name === name) ===
-      undefined
+      roomsInfo.assignations.find(
+        (assignation) => assignation.name === name
+      ) === undefined
     );
   });
 
   const participantsForRoom = (roomId: number) => {
-    return assignations
+    return roomsInfo.assignations
       .filter((assignation) => assignation.roomId == roomId)
       .map((assignation) => assignation.name);
   };
 
-  const roomsWithParticipants = rooms.map((room) => {
+  const roomsWithParticipants = roomsInfo.rooms.map((room) => {
     return {
       ...room,
       participants: participantsForRoom(room.id),
@@ -64,18 +82,15 @@ export default () => {
 
   const onKeydownNewName = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newName) {
-      if (names.includes(newName)) {
+      if (roomsInfo.names.includes(newName)) {
         setError(true);
 
         return;
       }
 
-      setNames((oldNames) => {
-        const newNames = [...oldNames, newName];
-        updateApiInfo({ names: newNames });
+      const newNames = [...roomsInfo.names, newName];
+      updateRoomsInfo({ names: newNames });
 
-        return newNames;
-      });
       setNewName("");
       setError(false);
     }
@@ -88,42 +103,40 @@ export default () => {
 
   const onKeydownNewRoom = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newRoom) {
-      if (rooms.some(room => room.name ===  newRoom )) {
+      if (roomsInfo.rooms.some((room) => room.name === newRoom)) {
         setErrorRoom(true);
 
         return;
       }
 
-      setRooms((oldRooms) => {
-        const newRooms = [...oldRooms, { id: oldRooms.length + 1, name: newRoom }];
-        updateApiInfo({ rooms: newRooms });
+      const newRooms = [
+        ...roomsInfo.rooms,
+        { id: roomsInfo.rooms.length + 1, name: newRoom },
+      ];
+      updateRoomsInfo({ rooms: newRooms });
 
-        return newRooms;
-      });
       setNewRoom("");
       setErrorRoom(false);
     }
   };
 
   const unAssign = () => {
-    const newAssignations = assignations.filter(
+    const newAssignations = roomsInfo.assignations.filter(
       (assignation) => assignation.name !== movingPerson
     );
-    setAssignations(newAssignations);
 
-    updateApiInfo({ assignations: newAssignations });
+    updateRoomsInfo({ assignations: newAssignations });
   };
 
   const assignToRoom = (roomId: number) => {
     const newAssignations = [
-      ...assignations.filter(
+      ...roomsInfo.assignations.filter(
         (assingation) => assingation.name !== movingPerson
       ),
       { name: movingPerson, roomId: roomId } as Assignation,
     ];
-    setAssignations(newAssignations);
 
-    updateApiInfo({ assignations: newAssignations });
+    updateRoomsInfo({ assignations: newAssignations });
   };
 
   const [dragOver, setDragOver] = useState<boolean>(false);
@@ -148,38 +161,24 @@ export default () => {
     setDragOver(false);
   };
 
-  const [apiKey] = useState<string>("99999");
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
-  
-  const updateApiInfo = (data: Partial<CalendarInfo>) => {
-    // setCalendarInfo(data);
-    timeoutId && clearTimeout(timeoutId);
-    setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
-  };
-
   const onRoomNameChanged = (roomId: number, roomName: string) => {
-    setRooms(rooms => {
-      const oldRoom = rooms.find(room => room.id === roomId);
-      const newRooms = [...rooms.filter(room => room.id !== roomId), { id: oldRoom?.id, name: roomName, link: oldRoom?.link } as Room]
-        .sort((a, b) => a.id - b.id);
+    const oldRoom = roomsInfo.rooms.find((room) => room.id === roomId);
+    const newRooms = [
+      ...roomsInfo.rooms.filter((room) => room.id !== roomId),
+      { id: oldRoom?.id, name: roomName, link: oldRoom?.link } as Room,
+    ].sort((a, b) => a.id - b.id);
 
-      updateApiInfo({ rooms: newRooms });
-
-      return newRooms;
-    })
+    updateRoomsInfo({ rooms: newRooms });
   };
 
   const onRoomLinkChanged = (roomId: number, link: string) => {
-    setRooms(rooms => {
-      const oldRoom = rooms.find(room => room.id === roomId);
-      const newRooms = [...rooms.filter(room => room.id !== roomId), { id: oldRoom?.id, name: oldRoom?.name, link: link } as Room]
-        .sort((a, b) => a.id - b.id);
-      
-      updateApiInfo({ rooms: newRooms });
+    const oldRoom = roomsInfo.rooms.find((room) => room.id === roomId);
+    const newRooms = [
+      ...roomsInfo.rooms.filter((room) => room.id !== roomId),
+      { id: oldRoom?.id, name: oldRoom?.name, link: link } as Room,
+    ].sort((a, b) => a.id - b.id);
 
-      return newRooms;
-    })
-
+    updateRoomsInfo({ rooms: newRooms });
   };
 
   return (
@@ -250,7 +249,8 @@ export default () => {
               </div>
               {errorRoom && (
                 <div className="self-start text-red-400 font-semibold">
-                  <span className="font-bold text-red-700">{newRoom}</span> already exists
+                  <span className="font-bold text-red-700">{newRoom}</span>{" "}
+                  already exists
                 </div>
               )}
             </section>

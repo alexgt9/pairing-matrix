@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import PairingApp from "../components/PairingApp";
 import pairingUrl from "../assets/pairing.png";
 import {
-  CalendarInfo,
   fetchCalendarInfo,
+  OnlyCalendarInfo,
   storeCalendarInfo,
 } from "../model/Storage";
+import { ApiKeyContext } from "../App";
 
 const DEFAULT_ROTATION_FREQUENCY = 1;
 
 export default function () {
-  const [calendarInfo, setCalendarInfo] = useState<Partial<CalendarInfo>>({
+  const [calendarInfo, setCalendarInfo] = useState<OnlyCalendarInfo>({
     names: ["Paco", "Alejandro", "Elna", "Laura"],
     description: "",
     untilDate: "",
@@ -19,29 +20,39 @@ export default function () {
 
   const [namesString, setNamesString] = useState<string>("");
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
-  const [apiKey] = useState<string>("99999");
+
+  const apiKey = useContext(ApiKeyContext);
+  console.log(apiKey);
 
   const dateIsInThePast =
     calendarInfo.untilDate && new Date(calendarInfo.untilDate) < new Date();
 
   useEffect(() => {
-    fetchCalendarInfo(apiKey)
-      .then((result: CalendarInfo) => {
-        setNamesString(result.names.join("\n"));
-        return setCalendarInfo(result)
-      })
-      .catch((error) => console.log("error", error));
-  }, []);
+    if (apiKey) {
+      fetchCalendarInfo(apiKey)
+        .then((result: OnlyCalendarInfo) => {
+          setNamesString(result.names.join("\n"));
+          setCalendarInfo(result);
+        })
+        .catch((error) => console.log("error", error));
+    }
+  }, [apiKey]);
 
-  const updateCalendarInfo = (data: Partial<CalendarInfo>) => {
-    setCalendarInfo(data);
-    timeoutId && clearTimeout(timeoutId);
-    setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
+  const updateCalendarInfo = (data: Partial<OnlyCalendarInfo>) => {
+    setCalendarInfo({ ...calendarInfo, ...data });
+
+    if (apiKey) {
+      timeoutId && clearTimeout(timeoutId);
+      setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
+    }
   };
 
   function onChangeNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setNamesString(event.target.value);
-    updateCalendarInfo({ ...calendarInfo, names: event.target.value.trim().split("\n") });
+    updateCalendarInfo({
+      ...calendarInfo,
+      names: event.target.value.trim().split("\n"),
+    });
   }
 
   const onChangeRotationFrequency = (

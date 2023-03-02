@@ -9,14 +9,20 @@ export type Room = {
   link?: string;
 };
 
-export type CalendarInfo = {
+export type RoomsInfo = {
+  names: string[];
+  assignations: Assignation[];
+  rooms: Room[];
+};
+
+export type OnlyCalendarInfo = {
   description: string;
   names: string[];
   untilDate: string;
   rotation_frequency: string;
-  assignations: Assignation[];
-  rooms: Room[];
 };
+
+export type CalendarInfo = OnlyCalendarInfo & RoomsInfo;
 
 const baseUrl = import.meta.env.VITE_API_HOST;
 
@@ -48,9 +54,9 @@ export const fetchCalendarInfo = async (apiKey : string) : Promise<CalendarInfo>
     })
       .then(response => {
         return Promise.resolve({
-                names: response.names ?? ["Paco", "Aleh"],
-                description: response.description,
-                rotation_frequency: response.rotation_frequency ? response.rotation_frequency?.toString() : "1",
+                names: response.names ?? [],
+                description: response.description ?? "",
+                rotation_frequency: response.rotation_frequency ?? 1,
                 untilDate: response.until_date ?? "",
                 assignations: response.assignations ?? [],
                 rooms: response.rooms ?? [],
