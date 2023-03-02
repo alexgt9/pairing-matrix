@@ -184,7 +184,6 @@ export default () => {
   return (
     <>
       <section className="ml-4 mt-4">
-        <header className="text-lg font-extrabold self-start">Rooms</header>
         <section className="flex">
           <section
             className="m-4 border-2 p-2"
