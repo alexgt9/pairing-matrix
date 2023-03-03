@@ -101,27 +101,40 @@ export const pairingPairs = functions.https.onRequest(async (request: Request, r
   }
 
   cors(request, response, async () => {
-    const perChunk = 2;
     const doc = await getFirestore().collection("extreme-programming").doc(apiKey).get();
-    const pairs = doc.data().names.reduce((resultArray : Record<string, String[]>, item : string, index : number) => {
-      const chunkIndex = `Room ${Math.floor(index/perChunk)}`;
-
-      if(!resultArray[chunkIndex]) {
-        resultArray[chunkIndex] = [] // start a new chunk
-      }
-    
-      resultArray[chunkIndex].push(item)
-    
-      return resultArray
-    }, {});
-
 
     if (!doc.exists) {
       console.log("No such document!");
 
       response.sendStatus(404);
-    } else {
-      response.json(pairs);
+
+      return;
     }
+
+    const data = doc.data();
+
+    const pairs = data.rooms.reduce((resultArray : Record<string, String[]>, room : Room) => {
+      resultArray[room.name] = participantsForRoom(room, data.assignations);
+
+      return resultArray;
+    }, {});
+
+    return response.json(pairs);
   });
 });
+
+const participantsForRoom = ((room: Room, assignations: Assignation[]) => {
+  return assignations
+    .filter(assignation => assignation.roomId == room.id)
+    .map((assignation) => assignation.name);
+});
+
+type Room = {
+  name: string;
+  id: number;
+}
+
+type Assignation = {
+  name: string;
+  roomId: number;
+}

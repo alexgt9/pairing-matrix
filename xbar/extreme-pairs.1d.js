@@ -23,7 +23,7 @@ const options = {
   'path': '/pairingPairs',
   'headers': {
     'x-api-key': API_KEY,
-  }
+  },
 };
 
 const req = https.request(options, function (res) {
@@ -34,12 +34,17 @@ const req = https.request(options, function (res) {
   });
 
   res.on("end", function (chunk) {
+    if (res.statusCode === 404) {
+      console.log("Nothing found for this api key!");
+      exit();
+    }
+
     const body = JSON.parse(Buffer.concat(chunks).toString());
     let found = false;
 
     for (const [key, value] of Object.entries(body)) {
         if (value.includes(YOUR_NAME)) {
-            console.log(key);
+            console.log(`${key} : ${value.join(" & ")}`);
             found = true;
         }
     }
@@ -51,13 +56,14 @@ const req = https.request(options, function (res) {
     console.log("---");
 
     for (const [key, value] of Object.entries(body)) {
-        console.log(`${key} : ${value.toString()} | href=https://thoughtworks.zoom.us/j/roomId`);
+        console.log(`${key} : ${value.join(" & ")} | href=https://zoom.us`);
     }
   });
+  
+});
 
-  res.on("error", function (error) {
-    console.error(error);
-  });
+req.on("error", function (error) {
+  console.error(error);
 });
 
 req.end();
