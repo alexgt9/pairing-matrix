@@ -18,11 +18,10 @@ export default function () {
     rotation_frequency: DEFAULT_ROTATION_FREQUENCY.toString(),
   });
 
-  const [namesString, setNamesString] = useState<string>("");
+  const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"));
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
 
   const apiKey = useContext(ApiKeyContext);
-  console.log(apiKey);
 
   const dateIsInThePast =
     calendarInfo.untilDate && new Date(calendarInfo.untilDate) < new Date();

@@ -15,12 +15,11 @@ export type ApiKeyProps = {
 
 export default function ({ onApiKeyChange }: ApiKeyProps) {
   const apiKey = useContext(ApiKeyContext);
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [openModal, setOpenModal] = useState(false);
 
   const apiKeyUrl = searchParams.get("team");
-  const shareLink = `${window.location.origin}/#${window.location.pathname}?team=${apiKey}`;
+  const shareLink = `${window.location.origin}${window.location.pathname}?team=${apiKey}`;
 
   const shareLinkToClipBoard = (event: React.MouseEvent) => {
     event.preventDefault();
