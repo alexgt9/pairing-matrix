@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import PairingApp from "../components/PairingApp";
 import pairingUrl from "../assets/pairing.png";
 import {
+  DEFAULT_CALENDAR_VALUES,
   fetchCalendarInfo,
   OnlyCalendarInfo,
   storeCalendarInfo,
@@ -11,12 +12,7 @@ import { ApiKeyContext } from "../App";
 const DEFAULT_ROTATION_FREQUENCY = 1;
 
 export default function () {
-  const [calendarInfo, setCalendarInfo] = useState<OnlyCalendarInfo>({
-    names: ["Paco", "Alejandro", "Elna", "Laura"],
-    description: "",
-    untilDate: "",
-    rotation_frequency: DEFAULT_ROTATION_FREQUENCY.toString(),
-  });
+  const [calendarInfo, setCalendarInfo] = useState<OnlyCalendarInfo>(DEFAULT_CALENDAR_VALUES);
 
   const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"));
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
@@ -86,17 +82,7 @@ export default function () {
   };
 
   return (
-    <div className="list-none text-center flex items-center flex-col">
-      <nav className={"flex items-center justify-center flex-wrap p-6"}>
-        <div className={"flex items-center flex-shrink-0 text-white mr-6"}>
-          <img className="w-1/4" src={pairingUrl} alt="Pairing logo" />
-          <span
-            className={"font-semibold text-xl tracking-tight text-gray-900"}
-          >
-            Pairing calendar
-          </span>
-        </div>
-      </nav>
+    <div className="list-none text-center flex items-center flex-col p-4">
       <form className={"w-full max-w-4xl"}>
         <div className={"flex grid-cols-2 flex-wrap -mx-3 mb-6"}>
           <div className={"row-span-1 px-3 mb-6 md:mb-0"}>

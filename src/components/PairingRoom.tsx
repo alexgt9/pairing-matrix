@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LinkIcon } from '@heroicons/react/24/solid'
+import { LinkIcon } from "@heroicons/react/24/solid";
 
 export type PairingRoomProps = {
   id: number;
@@ -10,6 +10,7 @@ export type PairingRoomProps = {
   finishDraging: (roomName: number) => void;
   nameChanged: (id: number, newName: string) => void;
   linkChanged: (id: number, newLink: string) => void;
+  selectedPerson: string;
 };
 
 export default ({
@@ -21,6 +22,7 @@ export default ({
   finishDraging,
   nameChanged,
   linkChanged,
+  selectedPerson,
 }: PairingRoomProps) => {
   const [dragOver, setDragOver] = useState<boolean>(false);
   const activeClass = dragOver ? "border-yellow-400" : "";
@@ -114,7 +116,10 @@ export default ({
             return (
               <div
                 key={name}
-                className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
+                className={
+                  "shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white " +
+                  (selectedPerson === name ? "bg-green-100" : "bg-blue-100")
+                }
                 onDragStart={onDragStartName}
                 draggable
               >
@@ -128,7 +133,7 @@ export default ({
       {editableName && (
         <input
           type={"text"}
-          className="self-center font-extrabold"
+          className="font-extrabold"
           placeholder="Room name"
           onKeyDown={onKeydownName}
           onChange={onChangeName}
@@ -147,7 +152,7 @@ export default ({
             </span>
             <span className="ml-2">
               <a href={link} target={"_blank"}>
-                <LinkIcon className="h-6 w-6"/>
+                <LinkIcon className="h-6 w-6" />
               </a>
             </span>
           </>

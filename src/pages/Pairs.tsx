@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ApiKeyContext } from "../App";
+import { ApiKeyContext, SelectedPersonContext } from "../App";
 import PairingRoom from "../components/PairingRoom";
 import {
   Assignation,
+  DEFAULT_CALENDAR_VALUES,
   fetchCalendarInfo,
   Room,
   RoomsInfo,
@@ -16,14 +17,9 @@ type RoomWithParticipants = Room & {
 const TO_ASSIGN_ROOM = "toAssign";
 
 export default () => {
-  const [roomsInfo, setRoomsInfo] = useState<RoomsInfo>({
-    names: ["Paco", "Alejandro"],
-    assignations: [{ name: "Paco", roomId: 1 }],
-    rooms: [
-      { id: 1, name: "Room 1" },
-      { id: 2, name: "Room 2" },
-    ],
-  });
+  const [roomsInfo, setRoomsInfo] = useState<RoomsInfo>(
+    DEFAULT_CALENDAR_VALUES
+  );
 
   const [newName, setNewName] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
@@ -33,6 +29,7 @@ export default () => {
   const [errorRoom, setErrorRoom] = useState<boolean>(false);
 
   const apiKey = useContext(ApiKeyContext);
+  const selectedPerson = useContext(SelectedPersonContext);
 
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
 
@@ -51,7 +48,8 @@ export default () => {
       fetchCalendarInfo(apiKey)
         .then(setRoomsInfo)
         .catch((error) => console.log("error", error));
-    }``
+    }
+    ``;
   }, [apiKey]);
 
   const participantsWithoutRoom = roomsInfo.names.filter((name) => {
@@ -183,7 +181,7 @@ export default () => {
 
   return (
     <>
-      <section className="ml-4 mt-4">
+      <section>
         <section className="flex">
           <section
             className="m-4 border-2 p-2"
@@ -208,16 +206,21 @@ export default () => {
                 already in the list
               </div>
             )}
-            {participantsWithoutRoom.map((item) => (
-              <div
-                className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white"
-                key={item}
-                onDragStart={onDragStartName}
-                draggable
-              >
-                {item}
-              </div>
-            ))}
+            {participantsWithoutRoom.map((item) => {
+              return (
+                <div
+                  className={
+                    "shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white " +
+                    (selectedPerson === item ? "bg-green-100" : "bg-blue-100")
+                  }
+                  key={item}
+                  onDragStart={onDragStartName}
+                  draggable
+                >
+                  {item}
+                </div>
+              );
+            })}
           </section>
           <section>
             <section>
@@ -232,6 +235,7 @@ export default () => {
                   finishDraging={assignToRoom}
                   nameChanged={onRoomNameChanged}
                   linkChanged={onRoomLinkChanged}
+                  selectedPerson={selectedPerson ?? ""}
                 />
               ))}
             </section>

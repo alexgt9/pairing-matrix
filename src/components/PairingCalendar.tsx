@@ -66,7 +66,7 @@ const PairingCalendar = ({
         description={description}
         untilDate={untilDate}
       />
-      <div className="space-y-4 flex flex-col">
+      <div className="flex flex-col">
         <CalendarTable days={daysFilteredByEndDate} />
         <CalendarFooter
           days={daysFilteredByEndDate}

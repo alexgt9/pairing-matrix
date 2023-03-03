@@ -22,6 +22,18 @@ export type OnlyCalendarInfo = {
   rotation_frequency: string;
 };
 
+export const DEFAULT_CALENDAR_VALUES = {
+  names: ["Paco", "Alejandro", "Elna", "Laura"],
+  description: "",
+  untilDate: "",
+  rotation_frequency: "1",
+  assignations: [{ name: "Paco", roomId: 1 }],
+  rooms: [
+    { id: 1, name: "Room 1" },
+    { id: 2, name: "Room 2" },
+  ],
+} as CalendarInfo;
+
 export type CalendarInfo = OnlyCalendarInfo & RoomsInfo;
 
 const baseUrl = import.meta.env.VITE_API_HOST;
@@ -48,9 +60,10 @@ export const fetchCalendarInfo = async (apiKey : string) : Promise<CalendarInfo>
       }
     }).then((response) => {
       if (response.status === 404) {
-        return Promise.reject("Document not found")
+        // return Promise.resolve(DEFAULT_CALENDAR_VALUES);
+        return Promise.reject("Api key not found");
       }
-      return response.json()
+      return response.json();
     })
       .then(response => {
         return Promise.resolve({

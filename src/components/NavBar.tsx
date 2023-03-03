@@ -5,12 +5,20 @@ import {
   CodeBracketSquareIcon,
 } from "@heroicons/react/24/solid";
 import ApiKey from "./ApiKey";
+import React from "react";
+import SelectedPerson from "./SelectedPerson";
 
 export type ApiKeyProps = {
   onApiKeyChange: (apiKey: string) => void;
+  names: string[];
+  onSelectedPersonChange: (selectedPerson: string) => void;
 };
 
-export default ({ onApiKeyChange }: ApiKeyProps) => {
+export default ({
+  onApiKeyChange,
+  names,
+  onSelectedPersonChange,
+}: ApiKeyProps) => {
   const activeStyle = {
     backgroundColor: "#535353",
     color: "white",
@@ -79,6 +87,10 @@ export default ({ onApiKeyChange }: ApiKeyProps) => {
               </div>
             </li>
           </ul>
+          <SelectedPerson
+            names={names}
+            onSelectedPersonChange={onSelectedPersonChange}
+          />
         </div>
       </div>
     </nav>

@@ -1,7 +1,8 @@
 import _ from "lodash";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { PairingDay } from "./PairingApp";
 import { Pair } from "../types";
+import { SelectedPersonContext } from "../App";
 
 const TWO_MONTHS = 8;
 const INFINITE = 1000;
@@ -99,11 +100,14 @@ const TableCell = ({
   coordinates,
   date,
 }: TableCellProps) => {
+  const selectedPerson = useContext(SelectedPersonContext);
+
   const listItems = pairs.map((pair: Pair, index: number) => (
-    <li key={`${pair[0]}${pair[1]}`}>{`${pair[0]} & ${pair[1]}`}</li>
+    <li className={pair.includes(selectedPerson ?? "") ? "bg-green-100" : ""} key={`${pair[0]}${pair[1]}`}>{`${pair[0]} & ${pair[1]}`}</li>
   ));
   const monthStyle =
     coordinates === "0-0" || date.getDate() === 1 ? "long" : "short";
+
 
   return (
     <td
