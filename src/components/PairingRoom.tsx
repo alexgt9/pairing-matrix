@@ -25,7 +25,7 @@ export default ({
   selectedPerson,
 }: PairingRoomProps) => {
   const [dragOver, setDragOver] = useState<boolean>(false);
-  const activeClass = dragOver ? "border-yellow-400" : "";
+  const activeClass = dragOver ? "border-yellow-400 dark:border-yellow-400" : "";
 
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
     startDraging(event.currentTarget.innerText);
@@ -97,7 +97,7 @@ export default ({
 
   return (
     <div
-      className={`flex flex-col border-2 w-max m-4 p-4 ${activeClass}`}
+      className={`flex flex-col border-2 dark:border-gray-700 w-max m-4 p-4 ${activeClass}`}
       onDragEnter={onDragOverRoom}
       onDragLeave={onDragLeaveRoom}
       onDragOver={onDragOverRoom}
@@ -160,7 +160,7 @@ export default ({
         {(editableLink || !link) && (
           <input
             type={"text"}
-            className="self-center"
+            className="self-center dark:bg-gray-200 pl-1 outline-slate-500"
             placeholder="Click to add"
             onKeyDown={onKeydownLink}
             onChange={onChangeLink}

@@ -5,7 +5,6 @@ import {
   CodeBracketSquareIcon,
 } from "@heroicons/react/24/solid";
 import ApiKey from "./ApiKey";
-import React from "react";
 import SelectedPerson from "./SelectedPerson";
 
 export type ApiKeyProps = {
@@ -42,7 +41,7 @@ export default ({
               <NavLink
                 to={`/`}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
-                className="py-8 px-4 relative flex flex-row items-center h-11 focus:outline-none  text-gray-600 hover:bg-gray-100 hover:text-blue-300 border-l-4 border-transparent"
+                className="py-8 px-4 relative flex flex-row items-center h-11 focus:outline-none  text-gray-600 hover:bg-gray-100 hover:text-blue-300 border-l-4 border-transparent dark:text-gray-300"
               >
                 <span className="inline-flex justify-center items-center">
                   <CalendarIcon className="h-8 w-8" />
@@ -56,7 +55,7 @@ export default ({
               <NavLink
                 to={`/pairs`}
                 style={({ isActive }) => (isActive ? activeStyle : undefined)}
-                className="py-8 px-4 relative flex flex-row items-center h-11 focus:outline-none  text-gray-600 hover:bg-gray-100 hover:text-blue-300 border-l-4 border-transparent"
+                className="py-8 px-4 relative flex flex-row items-center h-11 focus:outline-none  text-gray-600 hover:bg-gray-100 hover:text-blue-300 border-l-4 border-transparent dark:text-gray-300"
               >
                 <span className="inline-flex justify-center items-center">
                   <UserCircleIcon className="h-8 w-8" />
@@ -71,7 +70,7 @@ export default ({
                 href="https://github.com/alexgt9/pairing-matrix"
                 target="_blank"
                 rel="noreferrer"
-                className="py-8 px-4 relative flex flex-row items-center h-11 focus:outline-none  text-gray-600 hover:bg-gray-100 hover:text-blue-300 border-l-4 border-transparent"
+                className="py-8 px-4 relative flex flex-row items-center h-11 focus:outline-none  text-gray-600 hover:bg-gray-100 hover:text-blue-300 border-l-4 border-transparent dark:text-gray-300"
               >
                 <span className="inline-flex justify-center items-center">
                   <CodeBracketSquareIcon className="h-8 w-8" />

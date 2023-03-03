@@ -34,13 +34,18 @@ export default () => {
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
 
   const updateRoomsInfo = (data: Partial<RoomsInfo>) => {
-    const fullData = { ...roomsInfo, ...data };
-    setRoomsInfo(fullData);
+    setRoomsInfo((actualData) => {
+      const fullData = { ...actualData, ...data };
 
-    if (apiKey) {
-      timeoutId && clearTimeout(timeoutId);
-      setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, fullData), 3000));
-    }
+      if (apiKey) {
+        timeoutId && clearTimeout(timeoutId);
+        setTimeoutId(
+          setTimeout(() => storeCalendarInfo(apiKey, fullData), 3000)
+        );
+      }
+
+      return { ...actualData, ...data };
+    });
   };
 
   useEffect(() => {
@@ -107,15 +112,19 @@ export default () => {
         return;
       }
 
-      const newRooms = [
-        ...roomsInfo.rooms,
-        { id: roomsInfo.rooms.length + 1, name: newRoom },
-      ];
-      updateRoomsInfo({ rooms: newRooms });
-
-      setNewRoom("");
-      setErrorRoom(false);
+      createNewRoom(newRoom);
     }
+  };
+
+  const createNewRoom = (name: string): number => {
+    const newId = roomsInfo.rooms.length + 1;
+    const newRooms = [...roomsInfo.rooms, { id: newId, name }];
+    updateRoomsInfo({ rooms: newRooms });
+
+    setNewRoom("");
+    setErrorRoom(false);
+
+    return newId;
   };
 
   const unAssign = () => {
@@ -138,6 +147,7 @@ export default () => {
   };
 
   const [dragOver, setDragOver] = useState<boolean>(false);
+  const [dragOverNewRoom, setDragOverNewRoom] = useState<boolean>(false);
 
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
     setMovingPerson(event.currentTarget.innerText);
@@ -150,6 +160,23 @@ export default () => {
     unAssign();
   };
 
+  const onDropOnNewRoom = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragOverNewRoom(false);
+
+    const newRoomId = createNewRoom(`Room ${roomsInfo.rooms.length + 1}`);
+    assignToRoom(newRoomId);
+  };
+
+  const onDragOverNewRoom = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragOverNewRoom(true);
+  };
+
+  const onDragLeaveNewRoom = (event: React.DragEvent<HTMLDivElement>) => {
+    setDragOverNewRoom(false);
+  };
+
   const onDragOverRoom = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragOver(true);
@@ -158,6 +185,13 @@ export default () => {
   const onDragLeaveRoom = (event: React.DragEvent<HTMLDivElement>) => {
     setDragOver(false);
   };
+
+  const activeClass = dragOver
+    ? "border-yellow-400 dark:border-yellow-400"
+    : "";
+  const activeClassNewRoom = dragOverNewRoom
+    ? "border-yellow-400 dark:border-yellow-400"
+    : "";
 
   const onRoomNameChanged = (roomId: number, roomName: string) => {
     const oldRoom = roomsInfo.rooms.find((room) => room.id === roomId);
@@ -184,7 +218,7 @@ export default () => {
       <section>
         <section className="flex">
           <section
-            className="m-4 border-2 p-2"
+            className={`m-4 border-2 p-2 dark:border-gray-700 ${activeClass}`}
             onDragOver={onDragOverRoom}
             onDragEnter={onDragOverRoom}
             onDragLeave={onDragLeaveRoom}
@@ -207,12 +241,11 @@ export default () => {
               </div>
             )}
             {participantsWithoutRoom.map((item) => {
+              const selectedPersonClass =
+                selectedPerson === item ? "bg-green-100" : "bg-blue-100";
               return (
                 <div
-                  className={
-                    "shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white " +
-                    (selectedPerson === item ? "bg-green-100" : "bg-blue-100")
-                  }
+                  className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
                   key={item}
                   onDragStart={onDragStartName}
                   draggable
@@ -240,14 +273,17 @@ export default () => {
               ))}
             </section>
             <section>
-              <div className={`flex border-2 w-max m-4`}>
+              <div className={`flex border-2 w-max m-4 ${activeClassNewRoom}`}>
                 <input
                   type={"text"}
-                  className="self-center p-4"
+                  className={`self-center p-4 dark:bg-gray-200 outline-gray-400`}
                   placeholder="Click to add new room"
                   onKeyDown={onKeydownNewRoom}
                   onChange={onNewRoomChange}
                   value={newRoom}
+                  onDragOver={onDragOverNewRoom}
+                  onDragLeave={onDragLeaveNewRoom}
+                  onDrop={onDropOnNewRoom}
                 />
               </div>
               {errorRoom && (

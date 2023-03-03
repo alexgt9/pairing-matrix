@@ -29,7 +29,7 @@ export default function ({ names, onSelectedPersonChange }: SelectedPersonProps)
   }, [localStorage]);
 
   return (
-    <select onChange={selectedPersonChange}>
+    <select className="outline-none dark:bg-transparent dark:text-gray-300" onChange={selectedPersonChange}>
       {!selectedPerson && <option value="" disabled selected hidden>Who?</option>}
       {names.map(name => <option key={name} value={name} selected={selectedPerson === name}>{name}</option>) }
     </select>

@@ -27,7 +27,7 @@ const App = () => {
       <SelectedPersonContext.Provider value={selectedPerson}>
         <div className="flex flex-col h-screen">
           <NavBar onApiKeyChange={setApiKey} names={names} onSelectedPersonChange={setSelectedPerson} />
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto dark:bg-gray-300">
             <section id="detail" className="w-full">
               <Outlet />
             </section>
