@@ -4,7 +4,7 @@ import ApiKey from "./components/ApiKey";
 import { createContext, useState } from "react";
 import NavBar from "./components/NavBar";
 
-export const ApiKeyContext = createContext(null);
+export const ApiKeyContext = createContext<string | null>(null);
 
 const App = () => {
   const [apiKey, setApiKey] = useState<string | null>(null);
