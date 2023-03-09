@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import PairingApp from "../components/PairingApp";
-import pairingUrl from "../assets/pairing.png";
 import {
   DEFAULT_CALENDAR_VALUES,
   fetchCalendarInfo,
@@ -15,9 +14,9 @@ export default function () {
   const [calendarInfo, setCalendarInfo] = useState<OnlyCalendarInfo>(DEFAULT_CALENDAR_VALUES);
 
   const [namesString, setNamesString] = useState<string>(calendarInfo.names.join("\n"));
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
 
   const apiKey = useContext(ApiKeyContext);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   const dateIsInThePast =
     calendarInfo.untilDate && new Date(calendarInfo.untilDate) < new Date();
@@ -28,19 +27,25 @@ export default function () {
         .then((result: OnlyCalendarInfo) => {
           setNamesString(result.names.join("\n"));
           setCalendarInfo(result);
+          setInitialized(true);
         })
         .catch((error) => console.log("error", error));
     }
   }, [apiKey]);
 
   const updateCalendarInfo = (data: Partial<OnlyCalendarInfo>) => {
-    setCalendarInfo({ ...calendarInfo, ...data });
-
-    if (apiKey) {
-      timeoutId && clearTimeout(timeoutId);
-      setTimeoutId(setTimeout(() => storeCalendarInfo(apiKey, data), 3000));
-    }
+    setCalendarInfo(oldCalendarInfo => {
+      return {...oldCalendarInfo, ...data }
+    });
   };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      apiKey && initialized && storeCalendarInfo(apiKey, calendarInfo)
+    }, 3000)
+
+    return () => clearTimeout(timeoutId)
+  }, [apiKey, calendarInfo]);
 
   function onChangeNames(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setNamesString(event.target.value);

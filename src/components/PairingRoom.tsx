@@ -18,7 +18,7 @@ export default ({
   id,
   roomName,
   names,
-  link,
+  link = "",
   startDraging,
   finishDraging,
   nameChanged,
@@ -105,7 +105,7 @@ export default ({
         <div className="flex self-start w-full">
           <b className="mr-2">Link:</b>
           <input
-            type={"text"}
+            type="url"
             className="self-center dark:bg-gray-200 pl-1 outline-slate-500 text-violet-400 grow"
             placeholder="Click to add"
             onChange={onChangeLink}

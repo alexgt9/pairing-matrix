@@ -26,6 +26,7 @@ export default () => {
 
   const [newRoom, setNewRoom] = useState<string>("");
   const [errorRoom, setErrorRoom] = useState<boolean>(false);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   const apiKey = useContext(ApiKeyContext);
   const selectedPerson = useContext(SelectedPersonContext);
@@ -39,14 +40,17 @@ export default () => {
   useEffect(() => {
     if (apiKey) {
       fetchCalendarInfo(apiKey)
-        .then(setRoomsInfo)
+        .then(data => {
+          setRoomsInfo(data);
+          setInitialized(true);
+        })
         .catch((error) => console.log("error", error));
     };
   }, [apiKey]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      apiKey && storeCalendarInfo(apiKey, roomsInfo)
+      apiKey && initialized && storeCalendarInfo(apiKey, roomsInfo)
     }, 3000)
 
     return () => clearTimeout(timeoutId)
