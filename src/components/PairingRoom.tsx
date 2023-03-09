@@ -62,9 +62,7 @@ export default ({
 
   return (
     <Dropable onDrop={onDrop} styles={`flex flex-col border-2 dark:border-gray-700 w-full m-4 p-4`} dataId={id}>
-      <div
-        data-room-id={id}
-      >
+      <>
         {!editableName && (
           <div className="flex h-16">
             <span
@@ -119,7 +117,7 @@ export default ({
             </a>
           </span>
         </div>
-      </div>
+      </>
     </Dropable>
   );
 };

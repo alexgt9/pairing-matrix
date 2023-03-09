@@ -15,8 +15,6 @@ type RoomWithParticipants = Room & {
   participants: string[];
 };
 
-const TO_ASSIGN_ROOM = "toAssign";
-
 export default () => {
   const [roomsInfo, setRoomsInfo] = useState<RoomsInfo>(
     DEFAULT_CALENDAR_VALUES
@@ -32,19 +30,8 @@ export default () => {
   const apiKey = useContext(ApiKeyContext);
   const selectedPerson = useContext(SelectedPersonContext);
 
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | undefined>();
-
   const updateRoomsInfo = (data: Partial<RoomsInfo>) => {
     setRoomsInfo((actualData) => {
-      const fullData = { ...actualData, ...data };
-
-      if (apiKey) {
-        timeoutId && clearTimeout(timeoutId);
-        setTimeoutId(
-          setTimeout(() => storeCalendarInfo(apiKey, fullData), 3000)
-        );
-      }
-
       return { ...actualData, ...data };
     });
   };
@@ -54,9 +41,16 @@ export default () => {
       fetchCalendarInfo(apiKey)
         .then(setRoomsInfo)
         .catch((error) => console.log("error", error));
-    }
-    ``;
+    };
   }, [apiKey]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      apiKey && storeCalendarInfo(apiKey, roomsInfo)
+    }, 3000)
+
+    return () => clearTimeout(timeoutId)
+  }, [apiKey, roomsInfo]);
 
   const participantsWithoutRoom = roomsInfo.names.filter((name) => {
     return (
@@ -181,9 +175,7 @@ export default () => {
       <section>
         <section className="flex">
           <Dropable onDrop={unAssign} styles="m-4 border-2 p-2 dark:border-gray-700">
-            <section
-              data-room={TO_ASSIGN_ROOM}
-            >
+            <>
               <h2>Drag to assign a room</h2>
               <input
                 onKeyDown={onKeydownNewName}
@@ -213,7 +205,7 @@ export default () => {
                   </div>
                 );
               })}
-            </section>
+            </>
           </Dropable>
           <section className="w-full">
             <section className="pr-8">
