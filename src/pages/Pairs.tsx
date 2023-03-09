@@ -147,36 +147,14 @@ export default () => {
     updateRoomsInfo({ assignations: newAssignations });
   };
 
-  const [dragOver, setDragOver] = useState<boolean>(false);
-
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
     setMovingPerson(event.currentTarget.innerText);
-  };
-
-  const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragOver(false);
-
-    unAssign();
   };
 
   const onDropOnNewRoom = () => {
     const newRoomId = createNewRoom(`Room ${roomsInfo.rooms.length + 1}`);
     assignToRoom(newRoomId);
   };
-
-  const onDragOverRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragOver(true);
-  };
-
-  const onDragLeaveRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    setDragOver(false);
-  };
-
-  const activeClass = dragOver
-    ? "border-yellow-400 dark:border-yellow-400"
-    : "";
 
   const onRoomNameChanged = (roomId: number, roomName: string) => {
     const oldRoom = roomsInfo.rooms.find((room) => room.id === roomId);
@@ -202,44 +180,41 @@ export default () => {
     <>
       <section>
         <section className="flex">
-          <section
-            className={`m-4 border-2 p-2 dark:border-gray-700 ${activeClass}`}
-            onDragOver={onDragOverRoom}
-            onDragEnter={onDragOverRoom}
-            onDragLeave={onDragLeaveRoom}
-            onDrop={onDrop}
-            data-room={TO_ASSIGN_ROOM}
-          >
-            <h2>Drag to assign a room</h2>
-            <input
-              onKeyDown={onKeydownNewName}
-              className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
-              type="text"
-              placeholder="Add participant"
-              value={newName}
-              onChange={onNewNameChange}
-            />
-            {error && (
-              <div className="self-start text-red-400 font-semibold">
-                <span className="font-bold text-red-700">{newName}</span> is
-                already in the list
-              </div>
-            )}
-            {participantsWithoutRoom.map((item) => {
-              const selectedPersonClass =
-                selectedPerson === item ? "bg-green-100" : "bg-blue-100";
-              return (
-                <div
-                  className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
-                  key={item}
-                  onDragStart={onDragStartName}
-                  draggable
-                >
-                  {item}
+          <Dropable onDrop={unAssign} styles="m-4 border-2 p-2 dark:border-gray-700">
+            <section
+              data-room={TO_ASSIGN_ROOM}
+            >
+              <h2>Drag to assign a room</h2>
+              <input
+                onKeyDown={onKeydownNewName}
+                className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
+                type="text"
+                placeholder="Add participant"
+                value={newName}
+                onChange={onNewNameChange}
+              />
+              {error && (
+                <div className="self-start text-red-400 font-semibold">
+                  <span className="font-bold text-red-700">{newName}</span> is
+                  already in the list
                 </div>
-              );
-            })}
-          </section>
+              )}
+              {participantsWithoutRoom.map((item) => {
+                const selectedPersonClass =
+                  selectedPerson === item ? "bg-green-100" : "bg-blue-100";
+                return (
+                  <div
+                    className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
+                    key={item}
+                    onDragStart={onDragStartName}
+                    draggable
+                  >
+                    {item}
+                  </div>
+                );
+              })}
+            </section>
+          </Dropable>
           <section className="w-full">
             <section className="pr-8">
               {roomsWithParticipants.map((room) => (

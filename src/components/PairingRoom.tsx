@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
+import Dropable from "./Dropable";
 
 export type PairingRoomProps = {
   id: number;
@@ -24,28 +25,12 @@ export default ({
   linkChanged,
   selectedPerson,
 }: PairingRoomProps) => {
-  const [dragOver, setDragOver] = useState<boolean>(false);
-  const activeClass = dragOver ? "border-yellow-400 dark:border-yellow-400" : "";
-
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
     startDraging(event.currentTarget.innerText);
   };
 
-  const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragOver(false);
-
-    const roomId = event.currentTarget.dataset.roomId;
-    roomId && finishDraging(parseInt(roomId));
-  };
-
-  const onDragOverRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragOver(true);
-  };
-
-  const onDragLeaveRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    setDragOver(false);
+  const onDrop = (_event: React.DragEvent<HTMLDivElement>, roomId: number | undefined) => {
+    roomId && finishDraging(roomId);
   };
 
   const [newName, setNewName] = useState<string>(roomName);
@@ -76,68 +61,65 @@ export default ({
   };
 
   return (
-    <div
-      className={`flex flex-col border-2 dark:border-gray-700 w-full m-4 p-4 ${activeClass}`}
-      onDragEnter={onDragOverRoom}
-      onDragLeave={onDragLeaveRoom}
-      onDragOver={onDragOverRoom}
-      onDrop={onDrop}
-      data-room-id={id}
-    >
-      {!editableName && (
-        <div className="flex h-16">
-          <span
-            onClick={onNameClick}
-            className="self-center font-extrabold mr-2"
-          >
-            {roomName}
+    <Dropable onDrop={onDrop} styles={`flex flex-col border-2 dark:border-gray-700 w-full m-4 p-4`} dataId={id}>
+      <div
+        data-room-id={id}
+      >
+        {!editableName && (
+          <div className="flex h-16">
+            <span
+              onClick={onNameClick}
+              className="self-center font-extrabold mr-2"
+            >
+              {roomName}
+            </span>
+            {names.map((name) => {
+              return (
+                <div
+                  key={name}
+                  className={
+                    "shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white " +
+                    (selectedPerson === name ? "bg-green-100" : "bg-blue-100")
+                  }
+                  onDragStart={onDragStartName}
+                  draggable
+                >
+                  {name}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {editableName && (
+          <input
+            type={"text"}
+            className="font-extrabold"
+            placeholder="Room name"
+            onKeyDown={onKeydownName}
+            onChange={onChangeName}
+            value={newName}
+            autoFocus={editableName}
+            onBlur={onNameBlur}
+          />
+        )}
+
+        <div className="flex self-start w-full">
+          <b className="mr-2">Link:</b>
+          <input
+            type={"text"}
+            className="self-center dark:bg-gray-200 pl-1 outline-slate-500 text-violet-400 grow"
+            placeholder="Click to add"
+            onChange={onChangeLink}
+            value={link}
+          />
+          <span className="ml-2">
+            <a href={link} target={"_blank"}>
+              <ArrowTopRightOnSquareIcon className="h-6 w-6" />
+            </a>
           </span>
-          {names.map((name) => {
-            return (
-              <div
-                key={name}
-                className={
-                  "shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold hover:bg-sky-600 hover:text-white " +
-                  (selectedPerson === name ? "bg-green-100" : "bg-blue-100")
-                }
-                onDragStart={onDragStartName}
-                draggable
-              >
-                {name}
-              </div>
-            );
-          })}
         </div>
-      )}
-
-      {editableName && (
-        <input
-          type={"text"}
-          className="font-extrabold"
-          placeholder="Room name"
-          onKeyDown={onKeydownName}
-          onChange={onChangeName}
-          value={newName}
-          autoFocus={editableName}
-          onBlur={onNameBlur}
-        />
-      )}
-
-      <div className="flex self-start w-full">
-        <b className="mr-2">Link:</b>
-        <input
-          type={"text"}
-          className="self-center dark:bg-gray-200 pl-1 outline-slate-500 text-violet-400 grow"
-          placeholder="Click to add"
-          onChange={onChangeLink}
-          value={link}
-        />
-        <span className="ml-2">
-          <a href={link} target={"_blank"}>
-            <ArrowTopRightOnSquareIcon className="h-6 w-6" />
-          </a>
-        </span>
       </div>
-    </div>
+    </Dropable>
   );
 };

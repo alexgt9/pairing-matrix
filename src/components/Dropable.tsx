@@ -2,17 +2,16 @@ import { useState } from "react";
 
 export interface DropableProps {
   children: JSX.Element;
-  onDrop: () => void;
+  onDrop: (event: React.DragEvent<HTMLDivElement>, id: number | undefined) => void;
   styles?: string;
+  dataId?: number | undefined;
 }
 
-export default function ({ children, onDrop, styles }: DropableProps) {
+export default function ({ children, onDrop, styles, dataId }: DropableProps) {
   const [isHover, setIsHover] = useState<boolean>(false);
   const activeClassNewRoom = isHover
     ? "border-2 border-yellow-400 dark:border-yellow-400"
     : "border-2";
-
-    console.log(isHover);
 
   const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -27,7 +26,7 @@ export default function ({ children, onDrop, styles }: DropableProps) {
     event.preventDefault();
     setIsHover(false);
 
-    onDrop();
+    onDrop(event, dataId);
   };
 
   return (
