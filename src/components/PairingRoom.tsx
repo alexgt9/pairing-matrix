@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LinkIcon } from "@heroicons/react/24/solid";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 
 export type PairingRoomProps = {
   id: number;
@@ -71,33 +71,13 @@ export default ({
     }
   };
 
-  const [newLink, setNewLink] = useState<string>(link ?? "");
-  const [editableLink, setEditableLink] = useState<boolean>(false);
-
   const onChangeLink = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewLink(event.currentTarget.value);
-  };
-
-  const onLinkClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    setEditableLink(true);
-  };
-
-  const onLinkBlur = () => {
-    setEditableLink(false);
-    linkChanged(id, newLink);
-  };
-
-  const onKeydownLink = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && newLink) {
-      linkChanged(id, newLink);
-      setEditableLink(false);
-    }
+    linkChanged(id, event.currentTarget.value);
   };
 
   return (
     <div
-      className={`flex flex-col border-2 dark:border-gray-700 w-max m-4 p-4 ${activeClass}`}
+      className={`flex flex-col border-2 dark:border-gray-700 w-full m-4 p-4 ${activeClass}`}
       onDragEnter={onDragOverRoom}
       onDragLeave={onDragLeaveRoom}
       onDragOver={onDragOverRoom}
@@ -105,7 +85,7 @@ export default ({
       data-room-id={id}
     >
       {!editableName && (
-        <div className="flex">
+        <div className="flex h-16">
           <span
             onClick={onNameClick}
             className="self-center font-extrabold mr-2"
@@ -143,32 +123,20 @@ export default ({
         />
       )}
 
-      <div className="flex self-start">
-        <b className="mr-2">Link:</b>{" "}
-        {!editableLink && link && (
-          <>
-            <span onClick={onLinkClick} className="text-blue-400">
-              {link}
-            </span>
-            <span className="ml-2">
-              <a href={link} target={"_blank"}>
-                <LinkIcon className="h-6 w-6" />
-              </a>
-            </span>
-          </>
-        )}
-        {(editableLink || !link) && (
-          <input
-            type={"text"}
-            className="self-center dark:bg-gray-200 pl-1 outline-slate-500"
-            placeholder="Click to add"
-            onKeyDown={onKeydownLink}
-            onChange={onChangeLink}
-            value={newLink}
-            autoFocus={editableLink}
-            onBlur={onLinkBlur}
-          />
-        )}
+      <div className="flex self-start w-full">
+        <b className="mr-2">Link:</b>
+        <input
+          type={"text"}
+          className="self-center dark:bg-gray-200 pl-1 outline-slate-500 text-violet-400 grow"
+          placeholder="Click to add"
+          onChange={onChangeLink}
+          value={link}
+        />
+        <span className="ml-2">
+          <a href={link} target={"_blank"}>
+            <ArrowTopRightOnSquareIcon className="h-6 w-6" />
+          </a>
+        </span>
       </div>
     </div>
   );

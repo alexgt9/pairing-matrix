@@ -255,8 +255,8 @@ export default () => {
               );
             })}
           </section>
-          <section>
-            <section>
+          <section className="w-full">
+            <section className="pr-8">
               {roomsWithParticipants.map((room) => (
                 <PairingRoom
                   key={room.id}
@@ -271,27 +271,30 @@ export default () => {
                   selectedPerson={selectedPerson ?? ""}
                 />
               ))}
-            </section>
-            <section>
-              <div className={`flex border-2 w-max m-4 ${activeClassNewRoom}`}>
-                <input
-                  type={"text"}
-                  className={`self-center p-4 dark:bg-gray-200 outline-gray-400`}
-                  placeholder="Click to add new room"
-                  onKeyDown={onKeydownNewRoom}
-                  onChange={onNewRoomChange}
-                  value={newRoom}
-                  onDragOver={onDragOverNewRoom}
-                  onDragLeave={onDragLeaveNewRoom}
-                  onDrop={onDropOnNewRoom}
-                />
-              </div>
-              {errorRoom && (
-                <div className="self-start text-red-400 font-semibold">
-                  <span className="font-bold text-red-700">{newRoom}</span>{" "}
-                  already exists
+
+              <section>
+                <div
+                  className={`flex border-2 w-full m-4 ${activeClassNewRoom}`}
+                >
+                  <input
+                    type={"text"}
+                    className={`self-center p-4 dark:bg-gray-200 outline-gray-400 w-full`}
+                    placeholder="Drag or click to add new room"
+                    onKeyDown={onKeydownNewRoom}
+                    onChange={onNewRoomChange}
+                    value={newRoom}
+                    onDragOver={onDragOverNewRoom}
+                    onDragLeave={onDragLeaveNewRoom}
+                    onDrop={onDropOnNewRoom}
+                  />
                 </div>
-              )}
+                {errorRoom && (
+                  <div className="self-start text-red-400 font-semibold">
+                    <span className="font-bold text-red-700">{newRoom}</span>{" "}
+                    already exists
+                  </div>
+                )}
+              </section>
             </section>
           </section>
         </section>
