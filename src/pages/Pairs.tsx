@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ApiKeyContext, SelectedPersonContext } from "../App";
+import Dropable from "../components/Dropable";
 import PairingRoom from "../components/PairingRoom";
 import {
   Assignation,
@@ -147,7 +148,6 @@ export default () => {
   };
 
   const [dragOver, setDragOver] = useState<boolean>(false);
-  const [dragOverNewRoom, setDragOverNewRoom] = useState<boolean>(false);
 
   const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
     setMovingPerson(event.currentTarget.innerText);
@@ -160,21 +160,9 @@ export default () => {
     unAssign();
   };
 
-  const onDropOnNewRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragOverNewRoom(false);
-
+  const onDropOnNewRoom = () => {
     const newRoomId = createNewRoom(`Room ${roomsInfo.rooms.length + 1}`);
     assignToRoom(newRoomId);
-  };
-
-  const onDragOverNewRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setDragOverNewRoom(true);
-  };
-
-  const onDragLeaveNewRoom = (event: React.DragEvent<HTMLDivElement>) => {
-    setDragOverNewRoom(false);
   };
 
   const onDragOverRoom = (event: React.DragEvent<HTMLDivElement>) => {
@@ -187,9 +175,6 @@ export default () => {
   };
 
   const activeClass = dragOver
-    ? "border-yellow-400 dark:border-yellow-400"
-    : "";
-  const activeClassNewRoom = dragOverNewRoom
     ? "border-yellow-400 dark:border-yellow-400"
     : "";
 
@@ -272,10 +257,8 @@ export default () => {
                 />
               ))}
 
-              <section>
-                <div
-                  className={`flex border-2 w-full m-4 ${activeClassNewRoom}`}
-                >
+              <div className={`flex m-4 w-full`}>
+                <Dropable onDrop={onDropOnNewRoom} styles="w-full">
                   <input
                     type={"text"}
                     className={`self-center p-4 dark:bg-gray-200 outline-gray-400 w-full`}
@@ -283,18 +266,15 @@ export default () => {
                     onKeyDown={onKeydownNewRoom}
                     onChange={onNewRoomChange}
                     value={newRoom}
-                    onDragOver={onDragOverNewRoom}
-                    onDragLeave={onDragLeaveNewRoom}
-                    onDrop={onDropOnNewRoom}
                   />
+                </Dropable>
+              </div>
+              {errorRoom && (
+                <div className="self-start text-red-400 font-semibold">
+                  <span className="font-bold text-red-700">{newRoom}</span>{" "}
+                  already exists
                 </div>
-                {errorRoom && (
-                  <div className="self-start text-red-400 font-semibold">
-                    <span className="font-bold text-red-700">{newRoom}</span>{" "}
-                    already exists
-                  </div>
-                )}
-              </section>
+              )}
             </section>
           </section>
         </section>
