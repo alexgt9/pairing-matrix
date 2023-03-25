@@ -29,4 +29,4 @@ Every commit will be deployed automatically to github pages and firabase if need
 
 To configure the [xbar](https://xbarapp.com/) plugin, copy the file `xbar/extreme-pairs.1d.js` inside your xbar plugins folder.
 
-![alt text](https://github.com/alexgt9/pairing-matrix/blob/main/x-bar-example.png?raw=true)
+![xbar example](https://github.com/alexgt9/pairing-matrix/blob/main/xbar-example.png?raw=true)
