@@ -1,3 +1,4 @@
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import Dropable from "./Dropable";
 
@@ -8,6 +9,7 @@ export interface UnassignedProps {
   onNewName: (newName: string) => void;
   selectedPerson: string | null;
   onDragging: (movingPerson: string) => void;
+  onDelete: (name: string) => void;
 }
 
 export default function ({
@@ -17,6 +19,7 @@ export default function ({
   onNewName,
   selectedPerson,
   onDragging,
+  onDelete,
 }: UnassignedProps) {
   const [newName, setNewName] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
@@ -44,6 +47,12 @@ export default function ({
     onDragging(event.currentTarget.innerText);
   };
 
+  const onClickDelete = (event: React.MouseEvent<SVGAElement>) => {
+    const person = event.currentTarget.closest("div")?.innerText
+    person && onDelete(person);
+    event.preventDefault();
+  };
+
   return (
     <Dropable onDrop={onDrop} styles="m-4 border-2 p-2 dark:border-gray-700">
       <>
@@ -67,13 +76,14 @@ export default function ({
             selectedPerson === item ? "bg-green-100" : "bg-blue-100";
           return (
             <div
-              className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
+              className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass} relative`}
               key={item}
               title="Drag to move to a room"
               onDragStart={onDragStartName}
               draggable
             >
               {item}
+              <XMarkIcon className="h-6 w-6 text-black-500 hover:text-red-400 absolute top-3 right-3" onClick={onClickDelete} />
             </div>
           );
         })}

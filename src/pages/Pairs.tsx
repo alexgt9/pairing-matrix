@@ -138,6 +138,11 @@ export default () => {
     updateRoomsInfo({ rooms: newRooms, assignations: newAssignations });
   };
 
+  const deletePerson = (deletedName: string) => {
+    const newNames = roomsInfo.names.filter(name => name !== deletedName)
+    updateRoomsInfo({ names: newNames });
+  };
+
   return (
     <>
       <section>
@@ -149,6 +154,7 @@ export default () => {
             onNewName={onNewName}
             selectedPerson={selectedPerson}
             onDragging={setMovingPerson}
+            onDelete={deletePerson}
           />
           <section className="w-full">
             <section className="pr-8">
