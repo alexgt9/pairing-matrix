@@ -3,6 +3,8 @@
 This app generates a calendar visually and in .ics format with all the possible pairs and the 
 recurrence needed to rotate every x day(s)
 
+Or for manual assignations, allow you to keep track of the pairs.
+
 ## Available Scripts
 
 ### `yarn dev`
@@ -20,11 +22,11 @@ The server will update if you edit the functions.
 
 ### Deploy
 
-Every commit will be deployed automatically to github pages
-
-Inside the firebase folder, execute `firebase deploy`
+Every commit will be deployed automatically to github pages and firabase if needed
 
 
 ### xbar
 
 To configure the [xbar](https://xbarapp.com/) plugin, copy the file `xbar/extreme-pairs.1d.js` inside your xbar plugins folder.
+
+![alt text](https://github.com/alexgt9/pairing-matrix/blob/main/x-bar-example.png?raw=true)
