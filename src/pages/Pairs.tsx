@@ -12,25 +12,22 @@ import {
   storeCalendarInfo,
 } from "../model/Storage";
 import Unassigned from "../components/ManualPairs/Unassigned";
+import NewRoom from "../components/ManualPairs/NewRoom";
 
 type RoomWithParticipants = Room & {
   participants: string[];
 };
 
 export default () => {
+  const apiKey = useContext(ApiKeyContext);
+  const selectedPerson = useContext(SelectedPersonContext);
+
   const [roomsInfo, setRoomsInfo] = useState<RoomsInfo>(
     DEFAULT_CALENDAR_VALUES
   );
-
-  const [movingPerson, setMovingPerson] = useState<string | undefined>();
-
-  const [newRoom, setNewRoom] = useState<string>("");
-  const [errorRoom, setErrorRoom] = useState<boolean>(false);
-
-  const apiKey = useContext(ApiKeyContext);
   const [initialized, setInitialized] = useState<boolean>(false);
 
-  const selectedPerson = useContext(SelectedPersonContext);
+  const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
   const updateRoomsInfo = (data: Partial<RoomsInfo>) => {
     setRoomsInfo((actualData) => {
@@ -81,23 +78,6 @@ export default () => {
   const onNewName = (newName: string) => {
     const newNames = [...roomsInfo.names, newName];
     updateRoomsInfo({ names: newNames });
-  };
-
-  const onNewRoomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewRoom(event.currentTarget.value);
-    setErrorRoom(false);
-  };
-
-  const onKeydownNewRoom = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && newRoom) {
-      if (roomsInfo.rooms.some((room) => room.name === newRoom)) {
-        setErrorRoom(true);
-
-        return;
-      }
-
-      createNewRoom(newRoom);
-    }
   };
 
   const createNewRoom = (name: string): number => {
@@ -185,24 +165,9 @@ export default () => {
                   />
                 ))}
 
-                <div className={`flex m-4 w-full`}>
-                  <Dropable onDrop={onDropOnNewRoom} styles="w-full">
-                    <input
-                      type={"text"}
-                      className={`self-center p-4 dark:bg-gray-200 outline-gray-400 w-full`}
-                      placeholder="Drag or click to add new room"
-                      onKeyDown={onKeydownNewRoom}
-                      onChange={onNewRoomChange}
-                      value={newRoom}
-                    />
-                  </Dropable>
+                <div className={`flex m-4 w-full flex-col`}>
+                  <NewRoom onDrop={onDropOnNewRoom} rooms={roomsInfo.rooms} onNewRoom={createNewRoom} />
                 </div>
-                {errorRoom && (
-                  <div className="self-start text-red-400 font-semibold">
-                    <span className="font-bold text-red-700">{newRoom}</span>{" "}
-                    already exists
-                  </div>
-                )}
               </section>
             </section>
           </section>
