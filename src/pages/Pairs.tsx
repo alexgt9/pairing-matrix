@@ -134,43 +134,41 @@ export default () => {
 
   return (
     <>
-      {initialized && (
-        <section>
-          <section className="flex">
-            <Unassigned
-              onDrop={unAssign}
-              names={roomsInfo.names}
-              unassignedNames={participantsWithoutRoom}
-              onNewName={onNewName}
-              selectedPerson={selectedPerson}
-              onDragging={setMovingPerson}
-            />
-            <section className="w-full">
-              <section className="pr-8">
-                {roomsWithParticipants.map((room) => (
-                  <PairingRoom
-                    key={room.id}
-                    id={room.id}
-                    roomName={room.name}
-                    names={room.participants}
-                    link={room.link}
-                    startDraging={setMovingPerson}
-                    finishDraging={assignToRoom}
-                    nameChanged={onRoomNameChanged}
-                    linkChanged={onRoomLinkChanged}
-                    selectedPerson={selectedPerson ?? ""}
-                  />
-                ))}
+      <section>
+        <section className="flex">
+          <Unassigned
+            onDrop={unAssign}
+            names={roomsInfo.names}
+            unassignedNames={participantsWithoutRoom}
+            onNewName={onNewName}
+            selectedPerson={selectedPerson}
+            onDragging={setMovingPerson}
+          />
+          <section className="w-full">
+            <section className="pr-8">
+              {roomsWithParticipants.map((room) => (
+                <PairingRoom
+                  key={room.id}
+                  id={room.id}
+                  roomName={room.name}
+                  names={room.participants}
+                  link={room.link}
+                  startDraging={setMovingPerson}
+                  finishDraging={assignToRoom}
+                  nameChanged={onRoomNameChanged}
+                  linkChanged={onRoomLinkChanged}
+                  selectedPerson={selectedPerson ?? ""}
+                />
+              ))}
 
-                <div className={`flex m-4 w-full flex-col`}>
-                  <NewRoom onDrop={onDropOnNewRoom} rooms={roomsInfo.rooms} onNewRoom={createNewRoom} />
-                </div>
-              </section>
+              <div className={`flex m-4 w-full flex-col`}>
+                <NewRoom onDrop={onDropOnNewRoom} rooms={roomsInfo.rooms} onNewRoom={createNewRoom} />
+              </div>
             </section>
           </section>
         </section>
-      )}
-      {!initialized && <Loading />}
+      </section>
+      { !initialized && <Loading />}
     </>
   );
 };

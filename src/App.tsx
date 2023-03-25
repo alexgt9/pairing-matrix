@@ -28,7 +28,7 @@ const App = () => {
         <div className="flex flex-col h-screen">
           <NavBar onApiKeyChange={setApiKey} names={names} onSelectedPersonChange={setSelectedPerson} />
           <div className="flex-1 overflow-y-auto dark:bg-gray-300">
-            <section id="detail" className="w-full">
+            <section id="detail" className="w-full relative">
               <Outlet />
             </section>
           </div>
