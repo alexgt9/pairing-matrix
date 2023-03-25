@@ -1,6 +1,5 @@
-import React, { Suspense, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ApiKeyContext, SelectedPersonContext } from "../App";
-import Dropable from "../components/ManualPairs/Dropable";
 import Loading from "../components/Shared/Loading";
 import PairingRoom from "../components/ManualPairs/PairingRoom";
 import {
@@ -13,6 +12,7 @@ import {
 } from "../model/Storage";
 import Unassigned from "../components/ManualPairs/Unassigned";
 import NewRoom from "../components/ManualPairs/NewRoom";
+import { v4 } from "uuid";
 
 type RoomWithParticipants = Room & {
   participants: string[];
@@ -62,7 +62,7 @@ export default () => {
     );
   });
 
-  const participantsForRoom = (roomId: number) => {
+  const participantsForRoom = (roomId: string) => {
     return roomsInfo.assignations
       .filter((assignation) => assignation.roomId == roomId)
       .map((assignation) => assignation.name);
@@ -80,8 +80,8 @@ export default () => {
     updateRoomsInfo({ names: newNames });
   };
 
-  const createNewRoom = (name: string): number => {
-    const newId = roomsInfo.rooms.length + 1;
+  const createNewRoom = (name: string): string => {
+    const newId = v4();
     const newRooms = [...roomsInfo.rooms, { id: newId, name }];
     updateRoomsInfo({ rooms: newRooms });
 
@@ -96,7 +96,7 @@ export default () => {
     updateRoomsInfo({ assignations: newAssignations });
   };
 
-  const assignToRoom = (roomId: number) => {
+  const assignToRoom = (roomId: string) => {
     const newAssignations = [
       ...roomsInfo.assignations.filter(
         (assingation) => assingation.name !== movingPerson
@@ -112,24 +112,30 @@ export default () => {
     assignToRoom(newRoomId);
   };
 
-  const onRoomNameChanged = (roomId: number, roomName: string) => {
+  const onRoomNameChanged = (roomId: string, roomName: string) => {
     const oldRoom = roomsInfo.rooms.find((room) => room.id === roomId);
     const newRooms = [
       ...roomsInfo.rooms.filter((room) => room.id !== roomId),
       { id: oldRoom?.id, name: roomName, link: oldRoom?.link } as Room,
-    ].sort((a, b) => a.id - b.id);
+    ];
 
     updateRoomsInfo({ rooms: newRooms });
   };
 
-  const onRoomLinkChanged = (roomId: number, link: string) => {
+  const onRoomLinkChanged = (roomId: string, link: string) => {
     const oldRoom = roomsInfo.rooms.find((room) => room.id === roomId);
     const newRooms = [
       ...roomsInfo.rooms.filter((room) => room.id !== roomId),
       { id: oldRoom?.id, name: oldRoom?.name, link: link } as Room,
-    ].sort((a, b) => a.id - b.id);
+    ];
 
     updateRoomsInfo({ rooms: newRooms });
+  };
+
+  const onDeleteRoom = (roomId: string) => {
+    const newRooms = roomsInfo.rooms.filter(room => room.id !== roomId);
+    const newAssignations = roomsInfo.assignations.filter(assignation => assignation.roomId !== roomId);
+    updateRoomsInfo({ rooms: newRooms, assignations: newAssignations });
   };
 
   return (
@@ -158,6 +164,7 @@ export default () => {
                   nameChanged={onRoomNameChanged}
                   linkChanged={onRoomLinkChanged}
                   selectedPerson={selectedPerson ?? ""}
+                  onDelete={onDeleteRoom}
                 />
               ))}
 

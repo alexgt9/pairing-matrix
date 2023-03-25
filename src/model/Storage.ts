@@ -1,10 +1,10 @@
 export type Assignation = {
   name: string;
-  roomId: number;
+  roomId: string;
 };
 
 export type Room = {
-  id: number;
+  id: string;
   name: string;
   link?: string;
 };
@@ -27,10 +27,10 @@ export const DEFAULT_CALENDAR_VALUES = {
   description: "",
   untilDate: "",
   rotation_frequency: "1",
-  assignations: [{ name: "Paco", roomId: 1 }],
+  assignations: [{ name: "Paco", roomId: "1" }],
   rooms: [
-    { id: 1, name: "Room 1" },
-    { id: 2, name: "Room 2" },
+    { id: "1", name: "Room 1" },
+    { id: "2", name: "Room 2" },
   ],
 } as CalendarInfo;
 

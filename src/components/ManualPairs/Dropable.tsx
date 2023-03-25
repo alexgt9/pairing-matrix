@@ -2,9 +2,9 @@ import { useState } from "react";
 
 export interface DropableProps {
   children: JSX.Element;
-  onDrop: (event: React.DragEvent<HTMLDivElement>, id: number | undefined) => void;
+  onDrop: (event: React.DragEvent<HTMLDivElement>, id: string | undefined) => void;
   styles?: string;
-  dataId?: number | undefined;
+  dataId?: string | undefined;
 }
 
 export default function ({ children, onDrop, styles, dataId }: DropableProps) {

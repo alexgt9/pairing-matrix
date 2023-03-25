@@ -69,6 +69,7 @@ export default function ({
             <div
               className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
               key={item}
+              title="Drag to move to a room"
               onDragStart={onDragStartName}
               draggable
             >
