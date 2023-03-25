@@ -47,7 +47,7 @@ export default function ({
     onDragging(event.currentTarget.innerText);
   };
 
-  const onClickDelete = (event: React.MouseEvent<SVGAElement>) => {
+  const onClickDelete = (event: React.MouseEvent<SVGSVGElement>) => {
     const person = event.currentTarget.closest("div")?.innerText
     person && onDelete(person);
     event.preventDefault();
