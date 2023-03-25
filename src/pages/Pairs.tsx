@@ -85,9 +85,6 @@ export default () => {
     const newRooms = [...roomsInfo.rooms, { id: newId, name }];
     updateRoomsInfo({ rooms: newRooms });
 
-    setNewRoom("");
-    setErrorRoom(false);
-
     return newId;
   };
 

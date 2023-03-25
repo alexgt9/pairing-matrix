@@ -21,6 +21,8 @@ export default function ({ onDrop, rooms, onNewRoom }: NewRoomProps) {
       }
 
       onNewRoom(newRoom);
+      setNewRoom("");
+      setErrorRoom(false);
     }
   };
 
