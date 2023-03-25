@@ -3,7 +3,7 @@ import CalendarFooter from "./CalendarFooter";
 import CalendarTable from "./CalendarTable";
 import ConwaysLawAlert from "./ConwaysLawAlert";
 import { PairingDay, Rotations } from "./PairingApp";
-import { getNextWorkingDay, leastCommonMultiple, nextMonday } from "../services/utils";
+import { getNextWorkingDay, leastCommonMultiple, nextMonday } from "../../services/utils";
 
 const DAYS_A_WEEK = 5;
 const DEFAULT_ROTATION_FREQUENCY = 1;

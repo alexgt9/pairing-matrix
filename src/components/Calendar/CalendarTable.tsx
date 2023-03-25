@@ -1,8 +1,8 @@
 import _ from "lodash";
 import { useContext, useState } from "react";
 import { PairingDay } from "./PairingApp";
-import { Pair } from "../types";
-import { SelectedPersonContext } from "../App";
+import { Pair } from "../../types";
+import { SelectedPersonContext } from "../../App";
 
 const TWO_MONTHS = 8;
 const INFINITE = 1000;

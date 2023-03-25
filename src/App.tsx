@@ -1,7 +1,7 @@
 import "./App.css";
 import { Outlet } from "react-router-dom";
 import { createContext, useEffect, useState } from "react";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/Shared/NavBar";
 import { DEFAULT_CALENDAR_VALUES, fetchCalendarInfo, OnlyCalendarInfo } from "./model/Storage";
 
 export const ApiKeyContext = createContext<string | null>(null);

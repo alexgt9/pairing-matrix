@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { v4 } from "uuid";
-import { ApiKeyContext } from "../App";
+import { ApiKeyContext } from "../../App";
 import {
   LinkIcon,
   ClipboardDocumentCheckIcon,

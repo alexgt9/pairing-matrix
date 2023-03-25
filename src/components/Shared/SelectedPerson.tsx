@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { v4 } from "uuid";
-import { SelectedPersonContext } from "../App";
+import { SelectedPersonContext } from "../../App";
 import {
   LinkIcon,
   ClipboardDocumentCheckIcon,

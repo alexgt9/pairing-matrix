@@ -1,8 +1,8 @@
 import React, { Suspense, useContext, useEffect, useState } from "react";
 import { ApiKeyContext, SelectedPersonContext } from "../App";
-import Dropable from "../components/Dropable";
-import Loading from "../components/Loading";
-import PairingRoom from "../components/PairingRoom";
+import Dropable from "../components/ManualPairs/Dropable";
+import Loading from "../components/Shared/Loading";
+import PairingRoom from "../components/ManualPairs/PairingRoom";
 import {
   Assignation,
   DEFAULT_CALENDAR_VALUES,
@@ -11,6 +11,7 @@ import {
   RoomsInfo,
   storeCalendarInfo,
 } from "../model/Storage";
+import Unassigned from "../components/ManualPairs/Unassigned";
 
 type RoomWithParticipants = Room & {
   participants: string[];
@@ -21,8 +22,6 @@ export default () => {
     DEFAULT_CALENDAR_VALUES
   );
 
-  const [newName, setNewName] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
   const [movingPerson, setMovingPerson] = useState<string | undefined>();
 
   const [newRoom, setNewRoom] = useState<string>("");
@@ -79,25 +78,9 @@ export default () => {
     } as RoomWithParticipants;
   });
 
-  const onNewNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewName(event.currentTarget.value);
-    setError(false);
-  };
-
-  const onKeydownNewName = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && newName) {
-      if (roomsInfo.names.includes(newName)) {
-        setError(true);
-
-        return;
-      }
-
-      const newNames = [...roomsInfo.names, newName];
-      updateRoomsInfo({ names: newNames });
-
-      setNewName("");
-      setError(false);
-    }
+  const onNewName = (newName: string) => {
+    const newNames = [...roomsInfo.names, newName];
+    updateRoomsInfo({ names: newNames });
   };
 
   const onNewRoomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,10 +130,6 @@ export default () => {
     updateRoomsInfo({ assignations: newAssignations });
   };
 
-  const onDragStartName = (event: React.DragEvent<HTMLDivElement>) => {
-    setMovingPerson(event.currentTarget.innerText);
-  };
-
   const onDropOnNewRoom = () => {
     const newRoomId = createNewRoom(`Room ${roomsInfo.rooms.length + 1}`);
     assignToRoom(newRoomId);
@@ -178,45 +157,17 @@ export default () => {
 
   return (
     <>
-      { initialized && (
+      {initialized && (
         <section>
           <section className="flex">
-            <Dropable
+            <Unassigned
               onDrop={unAssign}
-              styles="m-4 border-2 p-2 dark:border-gray-700"
-            >
-              <>
-                <h2>Drag to assign a room</h2>
-                <input
-                  onKeyDown={onKeydownNewName}
-                  className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
-                  type="text"
-                  placeholder="Add participant"
-                  value={newName}
-                  onChange={onNewNameChange}
-                />
-                {error && (
-                  <div className="self-start text-red-400 font-semibold">
-                    <span className="font-bold text-red-700">{newName}</span> is
-                    already in the list
-                  </div>
-                )}
-                {participantsWithoutRoom.map((item) => {
-                  const selectedPersonClass =
-                    selectedPerson === item ? "bg-green-100" : "bg-blue-100";
-                  return (
-                    <div
-                      className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
-                      key={item}
-                      onDragStart={onDragStartName}
-                      draggable
-                    >
-                      {item}
-                    </div>
-                  );
-                })}
-              </>
-            </Dropable>
+              names={roomsInfo.names}
+              unassignedNames={participantsWithoutRoom}
+              onNewName={onNewName}
+              selectedPerson={selectedPerson}
+              onDragging={setMovingPerson}
+            />
             <section className="w-full">
               <section className="pr-8">
                 {roomsWithParticipants.map((room) => (
@@ -257,7 +208,7 @@ export default () => {
           </section>
         </section>
       )}
-      { !initialized && <Loading/> }
+      {!initialized && <Loading />}
     </>
   );
 };
