@@ -11,6 +11,45 @@ const cors = require("cors")({
   origin: true,
 });
 
+type Assignation = {
+  name: string;
+  roomId: number;
+};
+
+type Room = {
+  id: number;
+  name: string;
+  link?: string;
+};
+
+type RoomsInfo = {
+  names: string[];
+  assignations: Assignation[];
+  rooms: Room[];
+};
+
+type OnlyCalendarInfo = {
+  description: string;
+  names: string[];
+  untilDate: string;
+  rotation_frequency: string;
+};
+
+type CalendarInfo = OnlyCalendarInfo & RoomsInfo;
+
+const DEFAULT_CALENDAR_VALUES = {
+  names: ["Paco", "Alejandro", "Elna", "Laura"],
+  description: "",
+  untilDate: "",
+  rotation_frequency: "1",
+  assignations: [{ name: "Paco", roomId: 1 }],
+  rooms: [
+    { id: 1, name: "Room 1" },
+    { id: 2, name: "Room 2" },
+  ],
+} as CalendarInfo;
+
+
 export const getCalendarInfo = functions.https.onRequest(async (request: Request, response: Response) => {
   if (request.method === "OPTIONS") {
     cors(request, response, async () => {
@@ -37,7 +76,7 @@ export const getCalendarInfo = functions.https.onRequest(async (request: Request
     if (!doc.exists) {
       console.log("No such document!");
 
-      response.sendStatus(404);
+      response.json(DEFAULT_CALENDAR_VALUES);
     } else {
       response.json(doc.data());
     }
@@ -66,13 +105,6 @@ export const setCalendarInfo = functions.https.onRequest(async (request: Request
 
 
   cors(request, response, async () => {
-    // const data = {  
-    //   description: request.body.description ?? "",
-    //   names: request.body.names ?? ["Alejandro", "Javi", "Laura", "Elna"],
-    //   rotation_frequency: request.body["rotation_frequency"] ?? 1,
-    //   until_date: request.body["until_date"] ?? null,
-    //   last_modification: new Date(),
-    // };
     const data = {
       ...request.body,
       last_modification: new Date(),
@@ -128,13 +160,3 @@ const participantsForRoom = ((room: Room, assignations: Assignation[]) => {
     .filter(assignation => assignation.roomId == room.id)
     .map((assignation) => assignation.name);
 });
-
-type Room = {
-  name: string;
-  id: number;
-}
-
-type Assignation = {
-  name: string;
-  roomId: number;
-}

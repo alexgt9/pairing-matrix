@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import { ApiKeyContext, SelectedPersonContext } from "../App";
 import Dropable from "../components/Dropable";
+import Loading from "../components/Loading";
 import PairingRoom from "../components/PairingRoom";
 import {
   Assignation,
@@ -26,9 +27,10 @@ export default () => {
 
   const [newRoom, setNewRoom] = useState<string>("");
   const [errorRoom, setErrorRoom] = useState<boolean>(false);
-  const [initialized, setInitialized] = useState<boolean>(false);
 
   const apiKey = useContext(ApiKeyContext);
+  const [initialized, setInitialized] = useState<boolean>(false);
+
   const selectedPerson = useContext(SelectedPersonContext);
 
   const updateRoomsInfo = (data: Partial<RoomsInfo>) => {
@@ -40,20 +42,20 @@ export default () => {
   useEffect(() => {
     if (apiKey) {
       fetchCalendarInfo(apiKey)
-        .then(data => {
+        .then((data) => {
           setRoomsInfo(data);
           setInitialized(true);
         })
         .catch((error) => console.log("error", error));
-    };
+    }
   }, [apiKey]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      apiKey && initialized && storeCalendarInfo(apiKey, roomsInfo)
-    }, 3000)
+      apiKey && initialized && storeCalendarInfo(apiKey, roomsInfo);
+    }, 3000);
 
-    return () => clearTimeout(timeoutId)
+    return () => clearTimeout(timeoutId);
   }, [apiKey, roomsInfo]);
 
   const participantsWithoutRoom = roomsInfo.names.filter((name) => {
@@ -176,80 +178,86 @@ export default () => {
 
   return (
     <>
-      <section>
-        <section className="flex">
-          <Dropable onDrop={unAssign} styles="m-4 border-2 p-2 dark:border-gray-700">
-            <>
-              <h2>Drag to assign a room</h2>
-              <input
-                onKeyDown={onKeydownNewName}
-                className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
-                type="text"
-                placeholder="Add participant"
-                value={newName}
-                onChange={onNewNameChange}
-              />
-              {error && (
-                <div className="self-start text-red-400 font-semibold">
-                  <span className="font-bold text-red-700">{newName}</span> is
-                  already in the list
-                </div>
-              )}
-              {participantsWithoutRoom.map((item) => {
-                const selectedPersonClass =
-                  selectedPerson === item ? "bg-green-100" : "bg-blue-100";
-                return (
-                  <div
-                    className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
-                    key={item}
-                    onDragStart={onDragStartName}
-                    draggable
-                  >
-                    {item}
-                  </div>
-                );
-              })}
-            </>
-          </Dropable>
-          <section className="w-full">
-            <section className="pr-8">
-              {roomsWithParticipants.map((room) => (
-                <PairingRoom
-                  key={room.id}
-                  id={room.id}
-                  roomName={room.name}
-                  names={room.participants}
-                  link={room.link}
-                  startDraging={setMovingPerson}
-                  finishDraging={assignToRoom}
-                  nameChanged={onRoomNameChanged}
-                  linkChanged={onRoomLinkChanged}
-                  selectedPerson={selectedPerson ?? ""}
+      { initialized && (
+        <section>
+          <section className="flex">
+            <Dropable
+              onDrop={unAssign}
+              styles="m-4 border-2 p-2 dark:border-gray-700"
+            >
+              <>
+                <h2>Drag to assign a room</h2>
+                <input
+                  onKeyDown={onKeydownNewName}
+                  className="shadow border-1 p-3 m-2 rounded-lg bg-blue-100 font-bold"
+                  type="text"
+                  placeholder="Add participant"
+                  value={newName}
+                  onChange={onNewNameChange}
                 />
-              ))}
-
-              <div className={`flex m-4 w-full`}>
-                <Dropable onDrop={onDropOnNewRoom} styles="w-full">
-                  <input
-                    type={"text"}
-                    className={`self-center p-4 dark:bg-gray-200 outline-gray-400 w-full`}
-                    placeholder="Drag or click to add new room"
-                    onKeyDown={onKeydownNewRoom}
-                    onChange={onNewRoomChange}
-                    value={newRoom}
+                {error && (
+                  <div className="self-start text-red-400 font-semibold">
+                    <span className="font-bold text-red-700">{newName}</span> is
+                    already in the list
+                  </div>
+                )}
+                {participantsWithoutRoom.map((item) => {
+                  const selectedPersonClass =
+                    selectedPerson === item ? "bg-green-100" : "bg-blue-100";
+                  return (
+                    <div
+                      className={`shadow border-1 p-3 m-2 rounded-lg font-bold hover:bg-sky-600 hover:text-white ${selectedPersonClass}`}
+                      key={item}
+                      onDragStart={onDragStartName}
+                      draggable
+                    >
+                      {item}
+                    </div>
+                  );
+                })}
+              </>
+            </Dropable>
+            <section className="w-full">
+              <section className="pr-8">
+                {roomsWithParticipants.map((room) => (
+                  <PairingRoom
+                    key={room.id}
+                    id={room.id}
+                    roomName={room.name}
+                    names={room.participants}
+                    link={room.link}
+                    startDraging={setMovingPerson}
+                    finishDraging={assignToRoom}
+                    nameChanged={onRoomNameChanged}
+                    linkChanged={onRoomLinkChanged}
+                    selectedPerson={selectedPerson ?? ""}
                   />
-                </Dropable>
-              </div>
-              {errorRoom && (
-                <div className="self-start text-red-400 font-semibold">
-                  <span className="font-bold text-red-700">{newRoom}</span>{" "}
-                  already exists
+                ))}
+
+                <div className={`flex m-4 w-full`}>
+                  <Dropable onDrop={onDropOnNewRoom} styles="w-full">
+                    <input
+                      type={"text"}
+                      className={`self-center p-4 dark:bg-gray-200 outline-gray-400 w-full`}
+                      placeholder="Drag or click to add new room"
+                      onKeyDown={onKeydownNewRoom}
+                      onChange={onNewRoomChange}
+                      value={newRoom}
+                    />
+                  </Dropable>
                 </div>
-              )}
+                {errorRoom && (
+                  <div className="self-start text-red-400 font-semibold">
+                    <span className="font-bold text-red-700">{newRoom}</span>{" "}
+                    already exists
+                  </div>
+                )}
+              </section>
             </section>
           </section>
         </section>
-      </section>
+      )}
+      { !initialized && <Loading/> }
     </>
   );
 };
