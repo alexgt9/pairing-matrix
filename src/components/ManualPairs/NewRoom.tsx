@@ -3,18 +3,31 @@ import { Room } from "../../model/Storage";
 import Dropable from "./Dropable";
 
 export interface NewRoomProps {
-  onDrop: () => void;
+  onDropCb: (newRoomName: string) => void;
   rooms: Room[];
   onNewRoom: (newRoom: string) => void;
 }
 
-export default function ({ onDrop, rooms, onNewRoom }: NewRoomProps) {
+const generateNewUniqueRoomName = (rooms: Room[]) : string => {
+  let newId = rooms.length;
+  while(existRoomWithName(rooms, `Room ${newId}`)) {
+    newId++;
+  }
+
+  return `Room ${newId}`;
+};
+
+const existRoomWithName = (rooms: Room[], name: string) : boolean => {
+  return rooms.some((room) => room.name === name);
+};
+
+export default function ({ onDropCb, rooms, onNewRoom }: NewRoomProps) {
   const [newRoom, setNewRoom] = useState<string>("");
   const [errorRoom, setErrorRoom] = useState<boolean>(false);
 
   const onKeydownNewRoom = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && newRoom) {
-      if (rooms.some((room) => room.name === newRoom)) {
+      if (existRoomWithName(rooms, newRoom)) {
         setErrorRoom(true);
 
         return;
@@ -31,13 +44,17 @@ export default function ({ onDrop, rooms, onNewRoom }: NewRoomProps) {
     setErrorRoom(false);
   };
 
+  const onDrop = () => {
+    onDropCb(generateNewUniqueRoomName(rooms));
+  };
+
   return (
     <>
       <Dropable onDrop={onDrop} styles="w-full">
         <input
           type={"text"}
           className={`self-center p-4 dark:bg-gray-200 outline-gray-400 w-full`}
-          placeholder="Drag or click to add new room"
+          placeholder="Drag someone here or write room name to create a new room"
           onKeyDown={onKeydownNewRoom}
           onChange={onNewRoomChange}
           value={newRoom}

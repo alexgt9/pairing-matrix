@@ -18,6 +18,10 @@ type RoomWithParticipants = Room & {
   participants: string[];
 };
 
+const sortByName = (rooms: RoomWithParticipants[]) => {
+  return rooms.sort((roomA, roomB) => roomA.name.localeCompare(roomB.name));
+};
+
 export default () => {
   const apiKey = useContext(ApiKeyContext);
   const selectedPerson = useContext(SelectedPersonContext);
@@ -107,8 +111,8 @@ export default () => {
     updateRoomsInfo({ assignations: newAssignations });
   };
 
-  const onDropOnNewRoom = () => {
-    const newRoomId = createNewRoom(`Room ${roomsInfo.rooms.length + 1}`);
+  const onDropOnNewRoom = (newRoomName: string) => {
+    const newRoomId = createNewRoom(newRoomName);
     assignToRoom(newRoomId);
   };
 
@@ -158,7 +162,7 @@ export default () => {
           />
           <section className="w-full">
             <section className="pr-8">
-              {roomsWithParticipants.map((room) => (
+              {sortByName(roomsWithParticipants).map((room) => (
                 <PairingRoom
                   key={room.id}
                   id={room.id}
@@ -175,7 +179,7 @@ export default () => {
               ))}
 
               <div className={`flex m-4 w-full flex-col`}>
-                <NewRoom onDrop={onDropOnNewRoom} rooms={roomsInfo.rooms} onNewRoom={createNewRoom} />
+                <NewRoom onDropCb={onDropOnNewRoom} rooms={roomsInfo.rooms} onNewRoom={createNewRoom} />
               </div>
             </section>
           </section>
